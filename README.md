@@ -11,7 +11,7 @@ General description of developed source and header files
 
 * Drivers-related header and source files are located in the 'drivers' folder.
   <br>  ` stm32f407xx_drivers > drivers` </br>
-* The 'drivers' folder contains two sub-folders: *Inc* and *Src*.
+* The `'drivers'` folder contains two sub-folders: *Inc* and *Src*.
 * The *Inc* folder contains the following:
     1. `stm32f407xx.h` (Device-specific header file)
     2. `stm32f4o7xx_gpio_drivers.h` (for GPIO-specific APIs and structures)
