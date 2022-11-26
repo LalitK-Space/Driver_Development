@@ -1,15 +1,14 @@
 /*
- * stm32f407xx_gpio_drivers.c
+ * 											stm32f407xx_gpio_drivers.c
  *
- *  Created on: Aug. 17, 2022
- *      Author: Lalit
+ *  This file contains GPIO driver API implementations.
+ *
  */
 
 #include "stm32f407xx_gpio_drivers.h"
 
 
 /* -- APIs (Definitions) Supported by this GPIO driver -- */
-
 
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	GPIO_PeriClockControl
@@ -62,7 +61,7 @@ void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
 		}
 		else
 		{
-			// MEh
+			// Meh
 		}
 	}
 	else
@@ -107,12 +106,13 @@ void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
 			}
 			else
 			{
-				// MEh
+				// Meh
 			}
 		}
 
 	}
 }
+
 
 // Peripheral Initialize and De-initialize APIs
 
@@ -137,7 +137,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_ANALOG)
 	{
 		// In Pin Mode Register, each pin takes 2 bit fields [Shift value according to pin number]
-		// Logic: Mode value left shifter by (2 * pin number)
+		// Logic: Mode value left shifted by (2 * pin number)
 		temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
 
 		// Store 'temp' i.e. Mode Value in MODE Register [Set/touch only required bit leave rest untouched '|']
@@ -254,7 +254,6 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 }
 
 
-
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	GPIO_DeInit
  * Description	:	GPIO Peripheral De-Initialize API:
@@ -265,7 +264,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
  * ------------------------------------------------------------------------------------------------------ */
 void GPIO_DeInit(GPIO_RegDef_t *pGPIOx)
 {
-	// For Reseting GPIO, refer to RCC->AHB1RSTR (AHB1 Peripheral Reset Register)
+	// For Resetting GPIO, refer to RCC->AHB1RSTR (AHB1 Peripheral Reset Register)
 	// Make respective bit 1 to reset then again make it 0, if kept 1 then Peripheral will always be in reset state
 	// SET and RESET done in MACROS
 	if (pGPIOx == GPIOA)
@@ -306,10 +305,11 @@ void GPIO_DeInit(GPIO_RegDef_t *pGPIOx)
 			}
 			else
 			{
-				// MEh
+				// Meh
 			}
 
 }
+
 
 // Data Read and Write APIs
 
@@ -328,17 +328,18 @@ uint8_t  GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
 
 	// get value from IDR (Input Data Register)
 	// Right Shift the value of IDR by PinNumber times (so that desired value reaches at bit position 0 LSB)
-	// then, mask the remaining bit positions and extract the 0th (LSB) bit. Thats the pin Value
+	// then, mask the remaining bit positions and extract the 0th (LSB) bit. That's the pin Value
 
 	pinValue = (uint8_t) ((pGPIOx->IDR >> PinNumber) & 0x00000001);
 
 	return pinValue;
 }
 
+
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	GPIO_ReadFromInputPort
  * Description	:	To read from an input pin:
- *					~info~
+ *
  * Parameter 1	:	Base address of the GPIO peripheral
  * Return Type	:	uin16_t : 16 bit value, because of 16 pins
  * Note			:
@@ -352,6 +353,7 @@ uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx)
 
 	return portValue;
 }
+
 
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	GPIO_WriteToOutputPin
@@ -377,6 +379,7 @@ void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Val
 	}
 }
 
+
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	GPIO_WriteToOutputPort
  * Description	:	To write to entire port
@@ -392,6 +395,7 @@ void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value)
 	pGPIOx->ODR = Value;
 }
 
+
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	GPIO_ToggleOutputPin
  * Description	:	To toggle the given pin number
@@ -399,12 +403,13 @@ void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value)
  * Parameter 1	:	Base address of the GPIO peripheral
  * Parameter 2	: 	Pin Number to toggle
  * Return Type	:	none (void)
- * Note			:	none
+ * Note			:
  * ------------------------------------------------------------------------------------------------------ */
 void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
 {
 	pGPIOx->ODR ^= (1 << PinNumber);
 }
+
 
 // IRQ Configuration and ISR Handling
 
@@ -461,10 +466,11 @@ void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 
 }
 
+
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	GPIO_IRQPriorityConfig
  * Description	:	To configure the priority of the interrupt:
- *					~info~
+ *
  * Parameter 1	:	IRQ Number
  * Parameter 2	:	IRQ Priority
  * Return Type	:	none (void)
@@ -486,13 +492,14 @@ void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 
 }
 
+
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	GPIO_IRQHandling
  * Description	:	To Process the interrupt, when occurred:
- *					~info~
+ *
  * Parameter 1	:	Pin Number
  * Return Type	:	none (void)
- * Note			:	In case of GPIO, IRQ Handling is simple just Clear the pending bit
+ * Note			:	In case of GPIO, IRQ Handling is simple, just Clear the pending bit
  *
  * ------------------------------------------------------------------------------------------------------ */
 void GPIO_IRQHandling(uint8_t PinNumber)
