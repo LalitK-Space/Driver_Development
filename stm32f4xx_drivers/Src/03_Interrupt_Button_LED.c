@@ -3,12 +3,12 @@
  *
  *  LEDs are connected (on STM32F407G-DISC1 Board) as:
  * 	USER LED1 (LD4 GREEN)	->	PD12
- *	USER LED2 (LD3 ORANGE)	->  PD13
- *	USER LED3 (LD5 RED)		->	PD14
+ *	USER LED2 (LD3 ORANGE)	->  	PD13
+ *	USER LED3 (LD5 RED)	->	PD14
  *	USER LED4 (LD6 BLUE)	->	PD15
  *
  *	Button is connected:
- *	USER Button (B1)		->  PA0
+ *	USER Button (B1)	->  	PA0
  *
  *	-> Button is used to trigger the interrupt on falling edge on EXTI line 0 <-
  */
