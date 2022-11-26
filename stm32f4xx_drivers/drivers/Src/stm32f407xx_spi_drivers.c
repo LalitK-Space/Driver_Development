@@ -21,13 +21,13 @@ static void SPI_RXNE_Interrupt_Handle(SPI_Handle_t *pSPIHandle);
 
 /* -- > Peripheral Clock Setup  < -- */
 /* ------------------------------------------------------------------------------------------------------
- * Name			:   SPI_PeriClockControl
+ * Name		:  	SPI_PeriClockControl
  * Description	:	Peripheral Clock Setup API:
- * 					This function Enables or Disables peripheral clock for the given SPI peripheral
+ 			This function Enables or Disables peripheral clock for the given SPI peripheral
  * Parameter 1	:	Base address of the SPI peripheral
  * Parameter 2	:	ENABLE or DISABLE Macro
  * Return Type	:	none (void)
- * Note			:
+ * Note		:
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 {
@@ -86,12 +86,12 @@ void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 
 /* -- > Peripheral Initialize and De-initialize  < -- */
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_Init
+ * Name		:	SPI_Init
  * Description	:	Peripheral Initialize API:
- *					To initialize the given SPI peripheral.
+ *			To initialize the given SPI peripheral.
  * Parameter 1	:	Pointer to SPI Handle
  * Return Type	:	none (void)
- * Note			:	Peripheral Clock is enabled at starting of the function, so users need not do it explicitly.
+ * Note		:	Peripheral Clock is enabled at starting of the function, so users need not do it explicitly.
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_Init(SPI_Handle_t *pSPIHandle)
 {
@@ -150,12 +150,12 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
 
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_DeInit
+ * Name		:	SPI_DeInit
  * Description	:	SPI Peripheral De-Initialize API:
- *					reset all the registers of SPI peripheral mentioned
+ *			reset all the registers of SPI peripheral mentioned
  * Parameter 1	:	Base address of the SPI peripheral
  * Return Type	:	none (void)
- * Note			:
+ * Note		:
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_DeInit(SPI_RegDef_t *pSPIx)
 {
@@ -168,14 +168,14 @@ void SPI_DeInit(SPI_RegDef_t *pSPIx)
 
 /* -- > SPI Send and Receive Data < -- */
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_SendData
+ * Name		:	SPI_SendData
  * Description	:	SPI Peripheral Send Data API:
- *					Transmit data present in TX Buffer
+ *			Transmit data present in TX Buffer
  * Parameter 1	:	Base address of the SPI peripheral
  * Parameter 2 	:	Pointer to data
- * Parameter 3	:   Length of the Data to send
+ * Parameter 3	:   	Length of the Data to send
  * Return Type	:	none (void)
- * Note			:	Blocking API (Polling), function call will wait until all the bytes are transmitted.
+ * Note		:	Blocking API (Polling), function call will wait until all the bytes are transmitted.
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t LenOfData)
 {
@@ -196,13 +196,13 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t LenOfData)
 			LenOfData--;
 
 			// c. Increment pTxBuffer so that it points to the next data item
-			(uint16_t *) pTxBuffer++;					// type-casted because you have to increment it by 2 times
+			(uint16_t *) pTxBuffer++;			// type-casted because you have to increment it by 2 times
 		}
 		else
 		{
 			// 8 Bit DFF
 			// a. Load data into DR
-			pSPIx->DR = *pTxBuffer;					// pTxBuffer is already of uint8_t, so just de-reference
+			pSPIx->DR = *pTxBuffer;				// pTxBuffer is already of uint8_t, so just de-reference
 
 			// b. Decrement the LenOfData, one time
 			LenOfData--;
@@ -215,16 +215,16 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t LenOfData)
 }
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_ReceiveData
+ * Name		:	SPI_ReceiveData
  * Description	:	SPI Receive Data API:
  *
  * Parameter 1	:	Base address of the SPI peripheral
  * Parameter 2	:	Pointer to Receiver Buffer
- * Parameter 3	:   Length of the data
+ * Parameter 3	:   	Length of the data
  * Return Type	:	none (void)
- * Note			:	Blocking API (Polling), function call will wait until all the bytes are received.
- * 					(Similar to receive data, but instead load data into DR, here, we have to read data from DR
- * 					and increment RX buffer to make it point to next free memory address)
+ * Note		:	Blocking API (Polling), function call will wait until all the bytes are received.
+ * 			(Similar to receive data, but instead load data into DR, here, we have to read data from DR
+ * 			and increment RX buffer to make it point to next free memory address)
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t LenOfData)
 {
@@ -245,13 +245,13 @@ void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t LenOfData
 			LenOfData--;
 
 			// c. Increment pRxBuffer so that it points to the next free memory address
-			(uint16_t *) pRxBuffer++;					// Type-casted because it needs to increment by two times
+			(uint16_t *) pRxBuffer++;			// Type-casted because it needs to increment by two times
 		}
 		else
 		{
 			// 8 Bit DFF
 			// a. Load data into from DR to RX Buffer
-			*pRxBuffer = pSPIx->DR;					// pRxBuffer is already of uint8_t, so just de-reference
+			*pRxBuffer = pSPIx->DR;				// pRxBuffer is already of uint8_t, so just de-reference
 
 			// b. Decrement the LenOfData, one time
 			LenOfData--;
@@ -265,16 +265,16 @@ void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t LenOfData
 
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_SendData_IT
+ * Name		:	SPI_SendData_IT
  * Description	:	SPI Peripheral Send Data API:
- *					Transmit data present in TX Buffer in Interrupt Mode
+ *			Transmit data present in TX Buffer in Interrupt Mode
  * Parameter 1	:	SPI Handle Pointer
  * Parameter 2 	:	Pointer to data
- * Parameter 3	:   Length of the Data to send
+ * Parameter 3	:   	Length of the Data to send
  * Return Type	:	uint8_t state, returns state of SPI (READY, BUSY IN TX or BUSY IN RX)
- * Note			:	Interrupt Based (Non Blocking)
- * 					This API does  not send any data.
- * 					> Save the Tx buffer pointer and length information and enable TXEIE bit and returns
+ * Note		:	Interrupt Based (Non Blocking)
+ * 			This API does  not send any data.
+ * 			> Save the Tx buffer pointer and length information and enable TXEIE bit and returns
  * ------------------------------------------------------------------------------------------------------ */
 uint8_t SPI_SendData_IT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t LenOfData)
 {
@@ -292,7 +292,7 @@ uint8_t SPI_SendData_IT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t L
 
 		// b. Mark the SPI state as busy in transmission, so that no other code can
 		//    take over same SPI peripheral until the transmission is over
-		pSPIHandle->TxState			= SPI_BUSY_IN_TX;
+		pSPIHandle->TxState		= SPI_BUSY_IN_TX;
 
 		// c. Enable the TXEIE control bit to get interrupt whenever TXE flag is set in Status Register
 		//	  7th bit field in SPI_CR2
@@ -312,7 +312,7 @@ uint8_t SPI_SendData_IT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t L
  * Parameter 2	:	Pointer to Receiver Buffer
  * Parameter 3	:   Length of the data
  * Return Type	:	uint8_t state, returns state of SPI (READY, BUSY IN TX or BUSY IN RX)
- * Note			:
+ * Note		:
  * ------------------------------------------------------------------------------------------------------ */
 uint8_t SPI_ReceiveData_IT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t LenOfData)
 {
@@ -330,7 +330,7 @@ uint8_t SPI_ReceiveData_IT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_
 
 		// b. Mark the SPI state as busy in reception, so that no other code can
 		//    take over same SPI peripheral until the reception is over
-		pSPIHandle->RxState			= SPI_BUSY_IN_TX;
+		pSPIHandle->RxState		= SPI_BUSY_IN_TX;
 
 		// c. Enable the RXNEIE control bit to get interrupt whenever RXNE flag is set in Status Register
 		//	  6th bit filed in SPI_CR2
@@ -344,13 +344,13 @@ uint8_t SPI_ReceiveData_IT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_
 
 /* -- > IRQ Configuration and ISR Handling < -- */
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_IRQInterruptConfig
+ * Name		:	SPI_IRQInterruptConfig
  * Description	:	To configure IRQ:
- *					Processor specific configurations (NVIC Registers)
+ *			Processor specific configurations (NVIC Registers)
  * Parameter 1	:	IRQ number
  * Parameter 2	:	Enable or Disable the IRQ (ENABLE or DISABLE Macro)
  * Return Type	:	none (void)
- * Note			:
+ * Note		:
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 {
@@ -358,13 +358,13 @@ void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 }
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_IRQPriorityConfig
+ * Name		:	SPI_IRQPriorityConfig
  * Description	:	To configure the priority of the interrupt:
  *
  * Parameter 1	:	IRQ Number
  * Parameter 2	:	IRQ Priority
  * Return Type	:	none (void)
- * Note			:
+ * Note		:
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 {
@@ -372,12 +372,12 @@ void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 }
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_IRQHandling
+ * Name		:	SPI_IRQHandling
  * Description	:	To Process the interrupt, when occurred:
  *
  * Parameter 1	:	Pointer to SPI handle
  * Return Type	:	none (void)
- * Note			:
+ * Note		:
  *
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_IRQHandling(SPI_Handle_t *pSPIHandle)
@@ -415,9 +415,9 @@ void SPI_IRQHandling(SPI_Handle_t *pSPIHandle)
 
 /* - Checking if interrupt is triggered by an error -  */
 	/* Errors can be :  Master Mode Fault Event (MODF)
-	 * 				 :  Overrun Error (OVR)
-	 * 				 :	CRC Error (CRCERR)
-	 * 				 :  TI Frame Format Error (FRE)
+	 * 		 :  Overrun Error (OVR)
+	 * 		 :  CRC Error (CRCERR)
+	 * 		 :  TI Frame Format Error (FRE)
 	 */
 
 	// Only implementing Overrun Error (OVR)
@@ -445,13 +445,13 @@ void SPI_IRQHandling(SPI_Handle_t *pSPIHandle)
 
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_getFlagStatus
+ * Name		:	SPI_getFlagStatus
  * Description	:	To get the Flags info from Status Register
  *
  * Parameter 1	:	Pointer to SPI handle
- * Parameter 2  :   Flag Name
+ * Parameter 2  :   	Flag Name
  * Return Type	:	True or False (1 or 0)
- * Note			:
+ * Note		:
  * ------------------------------------------------------------------------------------------------------ */
 uint8_t SPI_getFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName)
 {
@@ -464,13 +464,13 @@ uint8_t SPI_getFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName)
 }
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_PeripheralControl
+ * Name		:	SPI_PeripheralControl
  * Description	:	To Enable or Disable the SPI Peripheral
  *
  * Parameter 1	:	Pointer to SPI handle
- * Parameter 2  :   Enable or Disable Macro
+ * Parameter 2  :   	Enable or Disable Macro
  * Return Type	:	none
- * Note			:	SPI Peripherals are disabled by default
+ * Note		:	SPI Peripherals are disabled by default
  *
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
@@ -487,17 +487,17 @@ void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_SSIConfig
+ * Name		:	SPI_SSIConfig
  * Description	:	To Configure the SSI bit
  *
  * Parameter 1	:	Pointer to SPI handle
- * Parameter 2  :   Enable or Disable Macro
+ * Parameter 2  :   	Enable or Disable Macro
  * Return Type	:	none
- * Note			:	When SSM is enabled, For MASTER the NSS signal should be tied to +VCC, when NOT used
- * 					to avoid the MODF ERROR. So When SSM is enabled and NSS of MASTER is not used, make SSI = 1
- * 					-> SSI bit influences the NSS state when SSM = 1
- * 					   By default, NSS will be pulled to LOW which is not acceptable for MASTER when working in
- * 					   NON MULTI-MASTER situation.
+ * Note		:	When SSM is enabled, For MASTER the NSS signal should be tied to +VCC, when NOT used
+ * 			to avoid the MODF ERROR. So When SSM is enabled and NSS of MASTER is not used, make SSI = 1
+ * 			-> SSI bit influences the NSS state when SSM = 1
+ * 		        By default, NSS will be pulled to LOW which is not acceptable for MASTER when working in
+ * 			NON MULTI-MASTER situation.
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 {
@@ -513,17 +513,17 @@ void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_SSOEConfig
+ * Name		:	SPI_SSOEConfig
  * Description	:	To Configure the SSI bit
  *
  * Parameter 1	:	Pointer to SPI handle
- * Parameter 2  :   Enable or Disable Macro
+ * Parameter 2  :	Enable or Disable Macro
  * Return Type	:	none
- * Note			:	Use-case: When Hardware Slave Select Management is used
- * 					NSS Output Enable (SSM = 0 and SSOE = 1)
- *					-> This Configuration is used when MCU is set as Master. The NSS pin is managed by the hardware.
- *					-> The NSS signal is driven LOW as soon as SPI is enabled in master mode (SPE = 1),
- *					   and is kept LOW until the SPI is disabled (SPE = 0) [thus making slave talk or disable]
+ * Note		:	Use-case: When Hardware Slave Select Management is used
+ * 			NSS Output Enable (SSM = 0 and SSOE = 1)
+ *			-> This Configuration is used when MCU is set as Master. The NSS pin is managed by the hardware.
+ *			-> The NSS signal is driven LOW as soon as SPI is enabled in master mode (SPE = 1),
+ *			   and is kept LOW until the SPI is disabled (SPE = 0) [thus making slave talk or disable]
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 {
@@ -540,13 +540,13 @@ void SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 /*------------------------------------ HELPER FUNCTIONS IMPLEMENTATIONS ----------------------------*/
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_TXE_Interrupt_Handle
+ * Name		:	SPI_TXE_Interrupt_Handle
  * Description	:	To handle interrupt triggered by TXE Flag
  *
  * Parameter 1	:	SPI Handle Pointer
  * Return Type	:	none (void)
- * Note			:	Private helper function (Called in SPI_IRQHandling function)
- * 					Similar to SPI_SendData
+ * Note		:	Private helper function (Called in SPI_IRQHandling function)
+ * 			Similar to SPI_SendData
  * ------------------------------------------------------------------------------------------------------ */
 static void SPI_TXE_Interrupt_Handle(SPI_Handle_t *pSPIHandle)
 {
@@ -555,20 +555,20 @@ static void SPI_TXE_Interrupt_Handle(SPI_Handle_t *pSPIHandle)
 	{
 		// 16 Bit DFF
 		// a. Load the data into DR
-		pSPIHandle->pSPIx->DR = *((uint16_t *) pSPIHandle->pTxBuffer);		// type-caste because pTxBuffer is of uint8_t and de-refernce to load the value
+		pSPIHandle->pSPIx->DR = *((uint16_t *) pSPIHandle->pTxBuffer);	// type-caste because pTxBuffer is of uint8_t and de-refernce to load the value
 
 		// b. Decrement the TxDataLength, two times (because 2 Bytes of data is sent in previous step)
 		pSPIHandle->TxDataLength--;
 		pSPIHandle->TxDataLength--;
 
 		// c. Increment pTxBuffer so that it points to the next data item
-		(uint16_t *) pSPIHandle->pTxBuffer++;								// type-casted because you have to increment it by 2 times
+		(uint16_t *) pSPIHandle->pTxBuffer++;				// type-casted because you have to increment it by 2 times
 	}
 	else
 	{
 		// 8 Bit DFF
 		// a. Load data into DR
-		pSPIHandle->pSPIx->DR = *pSPIHandle->pTxBuffer;						// pTxBuffer is already of uint8_t, so just de-reference
+		pSPIHandle->pSPIx->DR = *pSPIHandle->pTxBuffer;			// pTxBuffer is already of uint8_t, so just de-reference
 
 		// b. Decrement the TxDataLength, one time
 		pSPIHandle->TxDataLength--;
@@ -592,12 +592,12 @@ static void SPI_TXE_Interrupt_Handle(SPI_Handle_t *pSPIHandle)
 
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_RXNE_Interrupt_Handle
+ * Name		:	SPI_RXNE_Interrupt_Handle
  * Description	:	To handle interrupt triggered by RXNE Flag
  *
  * Parameter 1	:	SPI Handle Pointer
  * Return Type	:	none (void)
- * Note			:	Private helper function (Called in SPI_IRQHandling function)
+ * Note		:	Private helper function (Called in SPI_IRQHandling function)
  * ------------------------------------------------------------------------------------------------------ */
 static void SPI_RXNE_Interrupt_Handle(SPI_Handle_t *pSPIHandle)
 {
@@ -606,7 +606,8 @@ static void SPI_RXNE_Interrupt_Handle(SPI_Handle_t *pSPIHandle)
 	{
 		// 16 Bit DFF
 		// a. Load the data from DR to RX Buffer
-		*((uint16_t *) pSPIHandle->pRxBuffer) = (uint16_t) pSPIHandle->pSPIx->DR;		// type-caste because pRxBuffer is of uint8_t and de-refernce to load the value
+		// type-caste because pRxBuffer is of uint8_t and de-refernce to load the value
+		*((uint16_t *) pSPIHandle->pRxBuffer) = (uint16_t) pSPIHandle->pSPIx->DR; 
 
 		// Decrement the Rx Length
 		pSPIHandle->RxDataLength -= 2;
@@ -623,7 +624,7 @@ static void SPI_RXNE_Interrupt_Handle(SPI_Handle_t *pSPIHandle)
 	{
 		// 8 Bit DFF
 		// a. Load data into from DR to RX Buffer
-		*(pSPIHandle->pRxBuffer) = (uint8_t) pSPIHandle->pSPIx->DR;					// pRxBuffer is already of uint8_t, so just de-reference
+		*(pSPIHandle->pRxBuffer) = (uint8_t) pSPIHandle->pSPIx->DR;		// pRxBuffer is already of uint8_t, so just de-reference
 
 		// b. Decrement the Rx length, one time
 		pSPIHandle->RxDataLength--;
@@ -645,16 +646,16 @@ static void SPI_RXNE_Interrupt_Handle(SPI_Handle_t *pSPIHandle)
 
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_OVR_ERROR_Interrupt_Handle
+ * Name		:	SPI_OVR_ERROR_Interrupt_Handle
  * Description	:	To handle interrupt triggered by Overrun Error
  *
  * Parameter 1	:	SPI Handle Pointer
  * Return Type	:	none (void)
- * Note			:	Private helper function (Called in SPI_IRQHandling function)
- * 					if SPI is busy in transmission and at the same time, overrun error occurs,
- * 					"if statement" is ignored and application will be notified about the event.
- * 					when application receive event (SPI_EVENT_OVER_ERROR) then the application has to call
- * 					the SPI_ClearOVRFlag function explicitly.
+ * Note		:	Private helper function (Called in SPI_IRQHandling function)
+ * 			if SPI is busy in transmission and at the same time, overrun error occurs,
+ * 			"if statement" is ignored and application will be notified about the event.
+ * 			when application receive event (SPI_EVENT_OVER_ERROR) then the application has to call
+ * 			the SPI_ClearOVRFlag function explicitly.
  * ------------------------------------------------------------------------------------------------------ */
 static void SPI_OVR_ERROR_Interrupt_Handle(SPI_Handle_t *pSPIHandle)
 {
@@ -680,12 +681,12 @@ static void SPI_OVR_ERROR_Interrupt_Handle(SPI_Handle_t *pSPIHandle)
 
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_ClearOVRFlag
+ * Name		:	SPI_ClearOVRFlag
  * Description	:	To clear the Overrun Error Flag
  *
  * Parameter 1	:	SPI Handle Pointer
  * Return Type	:	none (void)
- * Note			:
+ * Note		:
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_ClearOVRFlag(SPI_RegDef_t *pSPIx)
 {
@@ -702,12 +703,12 @@ void SPI_ClearOVRFlag(SPI_RegDef_t *pSPIx)
 
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_CloseTransmission
+ * Name		:	SPI_CloseTransmission
  * Description	:	To terminate the SPI transmission
  *
  * Parameter 1	:	SPI Handle Pointer
  * Return Type	:	none (void)
- * Note			:	Application can call this function to close the communication
+ * Note		:	Application can call this function to close the communication
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_CloseTransmission(SPI_Handle_t *pSPIHandle)
 {
@@ -729,12 +730,12 @@ void SPI_CloseTransmission(SPI_Handle_t *pSPIHandle)
 
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_CloseReception
+ * Name		:	SPI_CloseReception
  * Description	:	To terminate the SPI reception
  *
  * Parameter 1	:	SPI Handle Pointer
  * Return Type	:	none (void)
- * Note			:	Application can call this function to close the communication
+ * Note		:	Application can call this function to close the communication
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_CloseReception(SPI_Handle_t *pSPIHandle)
 {
@@ -756,15 +757,15 @@ void SPI_CloseReception(SPI_Handle_t *pSPIHandle)
 
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_ApplicationEventCallback
+ * Name		:	SPI_ApplicationEventCallback
  * Description	:	Callback implementation
  *
  * Parameter 1	:	SPI Handle Pointer
  * Parameter 2	:	Application Event Macro (Possible SPI Application Events)
  * Return Type	:	none (void)
- * Note			:	This function will be implemented in the application. If not, to clear warnings or errors
- * 					weak implementation is done here.if application does not implement this function
- * 					then this implementation will be called. __attribute__((weak))
+ * Note		:	This function will be implemented in the application. If not, to clear warnings or errors
+ * 			weak implementation is done here. If application does not implement this function
+ * 			then this implementation will be called. __attribute__((weak))
  * ------------------------------------------------------------------------------------------------------ */
 __attribute__((weak)) void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, uint8_t ApplicationEvent)
 {
