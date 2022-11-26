@@ -1,8 +1,8 @@
 /*
- * stm32f407xx_spi_drivers.c
+ * 									stm32f407xx_spi_drivers.c
  *
- *  Created on: Aug. 26, 2022
- *      Author: Lalit
+ *   This file contains SPI driver API implementations.
+ *
  */
 
 
@@ -27,7 +27,7 @@ static void SPI_RXNE_Interrupt_Handle(SPI_Handle_t *pSPIHandle);
  * Parameter 1	:	Base address of the SPI peripheral
  * Parameter 2	:	ENABLE or DISABLE Macro
  * Return Type	:	none (void)
- * Note			:	none
+ * Note			:
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 {
@@ -51,7 +51,7 @@ void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 		}
 		else
 		{
-			// MEh
+			// Meh
 		}
 	}
 	else
@@ -76,12 +76,13 @@ void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 			}
 			else
 			{
-				// MEh
+				// Meh
 			}
 		}
 
 	}
 }
+
 
 /* -- > Peripheral Initialize and De-initialize  < -- */
 /* ------------------------------------------------------------------------------------------------------
@@ -146,6 +147,7 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
 	pSPIHandle->pSPIx->CR1 = tempReg;
 	// Can be directly assigned "=" because all the values are freshly defined, started with reseting it
 }
+
 
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	SPI_DeInit
@@ -243,7 +245,7 @@ void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t LenOfData
 			LenOfData--;
 
 			// c. Increment pRxBuffer so that it points to the next free memory address
-			(uint16_t *) pRxBuffer++;					// type-casted because you have to increment it by 2 times
+			(uint16_t *) pRxBuffer++;					// Type-casted because it needs to increment by two times
 		}
 		else
 		{
@@ -259,8 +261,8 @@ void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t LenOfData
 		}
 	}
 
-
 }
+
 
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	SPI_SendData_IT
@@ -297,11 +299,10 @@ uint8_t SPI_SendData_IT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t L
 		pSPIHandle->pSPIx->CR2		|= (1 << SPI_CR2_TXEIE);
 
 		// d. Data transmision will be handled by the ISR code
-
-
 		}
 	return state;
 }
+
 
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	SPI_ReceiveData_IT
@@ -311,9 +312,7 @@ uint8_t SPI_SendData_IT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t L
  * Parameter 2	:	Pointer to Receiver Buffer
  * Parameter 3	:   Length of the data
  * Return Type	:	uint8_t state, returns state of SPI (READY, BUSY IN TX or BUSY IN RX)
- * Note			:	SPI_SendData_IT function
- *
- *
+ * Note			:
  * ------------------------------------------------------------------------------------------------------ */
 uint8_t SPI_ReceiveData_IT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t LenOfData)
 {
@@ -338,11 +337,10 @@ uint8_t SPI_ReceiveData_IT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_
 		pSPIHandle->pSPIx->CR2		|= (1 << SPI_CR2_RXNEIE);
 
 		// d. Data transmision will be handled by the ISR code
-
-
 		}
 	return state;
 }
+
 
 /* -- > IRQ Configuration and ISR Handling < -- */
 /* ------------------------------------------------------------------------------------------------------
@@ -362,7 +360,7 @@ void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	SPI_IRQPriorityConfig
  * Description	:	To configure the priority of the interrupt:
- *					~info~
+ *
  * Parameter 1	:	IRQ Number
  * Parameter 2	:	IRQ Priority
  * Return Type	:	none (void)
@@ -376,7 +374,7 @@ void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	SPI_IRQHandling
  * Description	:	To Process the interrupt, when occurred:
- *					~info~
+ *
  * Parameter 1	:	Pointer to SPI handle
  * Return Type	:	none (void)
  * Note			:
@@ -443,10 +441,8 @@ void SPI_IRQHandling(SPI_Handle_t *pSPIHandle)
 		// Handle OVR Error
 		SPI_OVR_ERROR_Interrupt_Handle(pSPIHandle);
 	}
-
-
-
 }
+
 
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	SPI_getFlagStatus
@@ -456,7 +452,6 @@ void SPI_IRQHandling(SPI_Handle_t *pSPIHandle)
  * Parameter 2  :   Flag Name
  * Return Type	:	True or False (1 or 0)
  * Note			:
- *
  * ------------------------------------------------------------------------------------------------------ */
 uint8_t SPI_getFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName)
 {
@@ -490,6 +485,7 @@ void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 	}
 }
 
+
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	SPI_SSIConfig
  * Description	:	To Configure the SSI bit
@@ -502,7 +498,6 @@ void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
  * 					-> SSI bit influences the NSS state when SSM = 1
  * 					   By default, NSS will be pulled to LOW which is not acceptable for MASTER when working in
  * 					   NON MULTI-MASTER situation.
- *
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 {
@@ -516,6 +511,7 @@ void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 	}
 }
 
+
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	SPI_SSOEConfig
  * Description	:	To Configure the SSI bit
@@ -527,7 +523,7 @@ void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
  * 					NSS Output Enable (SSM = 0 and SSOE = 1)
  *					-> This Configuration is used when MCU is set as Master. The NSS pin is managed by the hardware.
  *					-> The NSS signal is driven LOW as soon as SPI is enabled in master mode (SPE = 1),
- *						and is kept LOW until the SPI is disabled (SPE = 0) [thus making slave talk or disable]
+ *					   and is kept LOW until the SPI is disabled (SPE = 0) [thus making slave talk or disable]
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 {
@@ -682,7 +678,6 @@ static void SPI_OVR_ERROR_Interrupt_Handle(SPI_Handle_t *pSPIHandle)
 
 }
 
-/*------------------------------------ ^ HELPER FUNCTIONS IMPLEMENTATIONS ^ ----------------------------*/
 
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	SPI_ClearOVRFlag
@@ -704,6 +699,7 @@ void SPI_ClearOVRFlag(SPI_RegDef_t *pSPIx)
 	// Simply used to read DR and DR to clear the OVR Flag (How to clear -> reference manual)
 	(void) temp;
 }
+
 
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	SPI_CloseTransmission
@@ -731,6 +727,7 @@ void SPI_CloseTransmission(SPI_Handle_t *pSPIHandle)
 
 }
 
+
 /* ------------------------------------------------------------------------------------------------------
  * Name			:	SPI_CloseReception
  * Description	:	To terminate the SPI reception
@@ -755,7 +752,6 @@ void SPI_CloseReception(SPI_Handle_t *pSPIHandle)
 	// d. Change the state
 	pSPIHandle->RxState = SPI_READY;
 
-
 }
 
 
@@ -772,6 +768,5 @@ void SPI_CloseReception(SPI_Handle_t *pSPIHandle)
  * ------------------------------------------------------------------------------------------------------ */
 __attribute__((weak)) void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, uint8_t ApplicationEvent)
 {
-	// Weak Implementation.
 	// May or may not be implemented in the application file as per the requirements
 }
