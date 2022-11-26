@@ -1,0 +1,98 @@
+
+#include "stm32f407xx.h"
+
+#include "stm32f407xx_gpio_drivers.h"
+
+#include "stm32f407xx_spi_drivers.h"
+
+#include <string.h>
+
+SPI_Handle_t SPI2Handle;
+
+#define MAX_LEN 500
+
+char RCVBuff[MAX_LEN];
+
+volatile char ReadByte;
+
+volatile uint8_t rvcStop = 0;
+
+volatile uint8_t dataAvailabe = 0;
+
+void delay(void)
+{
+	for(uint32_t i = 0; i < 500000/2 ; i++);
+}
+
+void SPI2_GPIO_Init(void)
+{
+	/* --  Handle variable -- */
+	GPIO_Handle_t SPIpins;
+
+	/* -- Port Selection -- */
+	SPIpins.pGPIOx 								= GPIOB;			    // PORT B
+
+	// Peripheral Configurations
+	SPIpins.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_ALTFUNC;	// Mode as Alternate Functionality
+	SPIpins.GPIO_PinConfig.GPIO_PinAltFuncMode 	= 5;					// ALT FUNCTION Mode is 5
+	SPIpins.GPIO_PinConfig.GPIO_PinOPType		= GPIO_OP_TYPE_PP;		// Push Pull Mode
+	SPIpins.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_NO_PUPD;			// No Pull UP/DOWN
+	SPIpins.GPIO_PinConfig.GPIO_PinSpeed		= GPIO_SPEED_VERY_HIGH;	// SPEED doesn't matter
+
+	/* -- Pins Configuration -- */
+	// PB(15) -> SPI2_MOSI
+	SPIpins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_Pin_15;
+	GPIO_Init(&SPIpins);
+
+
+	// PB(14) -> SPI2_MISO
+	SPIpins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_Pin_14;
+	GPIO_Init(&SPIpins);
+
+
+	// PB(13) -> SPI2_SCLK
+	SPIpins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_Pin_13;
+	GPIO_Init(&SPIpins);
+
+
+	// PB(12) -> SPI2_NSS
+	SPIpins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_Pin_12;
+	GPIO_Init(&SPIpins);
+
+}
+
+void SPI2_GPIO_Init(void)
+{
+	/* -- Port Selection -- */
+	SPIpins.pGPIOx 								= GPIOB;			    // PORT B
+
+	// Peripheral Configurations
+	SPIpins.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_ALTFUNC;	// Mode as Alternate Functionality
+	SPIpins.GPIO_PinConfig.GPIO_PinAltFuncMode 	= 5;					// ALT FUNCTION Mode is 5
+	SPIpins.GPIO_PinConfig.GPIO_PinOPType		= GPIO_OP_TYPE_PP;		// Push Pull Mode
+	SPIpins.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_NO_PUPD;			// No Pull UP/DOWN
+	SPIpins.GPIO_PinConfig.GPIO_PinSpeed		= GPIO_SPEED_VERY_HIGH;	// SPEED doesn't matter
+
+	/* -- Pins Configuration -- */
+	// PB(15) -> SPI2_MOSI
+	SPIpins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_Pin_15;
+	GPIO_Init(&SPIpins);
+
+
+	// PB(14) -> SPI2_MISO
+	SPIpins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_Pin_14;
+	GPIO_Init(&SPIpins);
+
+
+	// PB(13) -> SPI2_SCLK
+	SPIpins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_Pin_13;
+	GPIO_Init(&SPIpins);
+
+
+	// PB(12) -> SPI2_NSS
+	SPIpins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_Pin_12;
+	GPIO_Init(&SPIpins);
+
+}
+
+

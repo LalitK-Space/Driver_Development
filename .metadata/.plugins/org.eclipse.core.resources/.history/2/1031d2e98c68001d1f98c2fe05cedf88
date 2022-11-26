@@ -1,0 +1,91 @@
+
+#include "stm32f407xx.h"
+
+#include "stm32f407xx_gpio_drivers.h"
+
+#include "stm32f407xx_spi_drivers.h"
+
+#include <string.h>
+
+SPI_Handle_t SPI2Handle;
+
+#define MAX_LEN 500
+
+char RCVBuff[MAX_LEN];
+
+volatile char ReadByte;
+
+volatile uint8_t rvcStop = 0;
+
+volatile uint8_t dataAvailabe = 0;
+
+void delay(void)
+{
+	for(uint32_t i = 0; i < 500000/2 ; i++);
+}
+
+void SPI2_GPIO_Init(void)
+{
+	/* --  Handle variable -- */
+	GPIO_Handle_t SPIpins;
+
+	/* -- Port Selection -- */
+	SPIpins.pGPIOx 								= GPIOB;			    // PORT B
+
+	// Peripheral Configurations
+	SPIpins.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_ALTFUNC;	// Mode as Alternate Functionality
+	SPIpins.GPIO_PinConfig.GPIO_PinAltFuncMode 	= 5;					// ALT FUNCTION Mode is 5
+	SPIpins.GPIO_PinConfig.GPIO_PinOPType		= GPIO_OP_TYPE_PP;		// Push Pull Mode
+	SPIpins.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_NO_PUPD;			// No Pull UP/DOWN
+	SPIpins.GPIO_PinConfig.GPIO_PinSpeed		= GPIO_SPEED_VERY_HIGH;	// SPEED doesn't matter
+
+	/* -- Pins Configuration -- */
+	// PB(15) -> SPI2_MOSI
+	SPIpins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_Pin_15;
+	GPIO_Init(&SPIpins);
+
+
+	// PB(14) -> SPI2_MISO
+	SPIpins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_Pin_14;
+	GPIO_Init(&SPIpins);
+
+
+	// PB(13) -> SPI2_SCLK
+	SPIpins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_Pin_13;
+	GPIO_Init(&SPIpins);
+
+
+	// PB(12) -> SPI2_NSS
+	SPIpins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_Pin_12;
+	GPIO_Init(&SPIpins);
+
+}
+
+void SPI2_Init(void)
+{
+	/* --  Handle variable -- */
+	SPI_Handle_t SPI2Handle;
+
+	/* -- Base Address of the SPI2 Peripheral -- */
+	SPI2Handle.pSPIx							= SPI2;
+
+	/* -- Peripheral Configuration -- */
+	SPI2Handle.SPIConfig.SPI_BusConfig			= SPI_BUS_CONFIG_FD;		// Full-Duplex Communication
+	SPI2Handle.SPIConfig.SPI_DeviceMOde			= SPI_DEVICE_MODE_MASTER;	// Application is MASTER
+	SPI2Handle.SPIConfig.SPI_Speed				= SPI_SCLK_SPEED_DIV_8;		// Max Speed p-clk/8 : SCLK = 2MHz
+	SPI2Handle.SPIConfig.SPI_DFF				= SPI_DFF_8BITS;			// 8Bits Data Frame Format
+	SPI2Handle.SPIConfig.SPI_COPL				= SPI_CPOL_LOW;				// Default
+	SPI2Handle.SPIConfig.SPI_CPHA				= SPI_CPHA_LOW;				// Default
+	SPI2Handle.SPIConfig.SPI_SSM				= SPI_SSM_SW_DI;			// Software Slave Select Management Disabled
+
+	/* -- Initialize the SPI Peripheral -- */
+	SPI_Init(&SPI2Handle);
+
+}
+
+void Slave_GPIO_InterruptPinInit(void)
+{
+	GPIO_Handle_t SPIInitPin;
+}
+
+

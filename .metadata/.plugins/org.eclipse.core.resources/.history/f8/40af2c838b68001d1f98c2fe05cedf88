@@ -1,0 +1,18 @@
+
+#include "stm32f407xx.h"
+
+#include "stm32f407xx_gpio_drivers.h"
+
+#include "stm32f407xx_spi_drivers.h"
+
+#include <string.h>
+
+SPI_Handle_t SPIHandle;
+
+#define MAX_LEN 500
+
+char RCVBuff[MAX_LEN];
+
+volatile char ReadByte;
+
+volatile uint8_t rvcStop = 0;
