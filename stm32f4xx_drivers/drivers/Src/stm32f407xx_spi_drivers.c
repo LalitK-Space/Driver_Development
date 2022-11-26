@@ -305,12 +305,12 @@ uint8_t SPI_SendData_IT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t L
 
 
 /* ------------------------------------------------------------------------------------------------------
- * Name			:	SPI_ReceiveData_IT
+ * Name		:	SPI_ReceiveData_IT
  * Description	:	SPI Receive Data API:
- *					(Interrupt Mode)
+ *			(Interrupt Mode)
  * Parameter 1	:	SPI Handle Pointer
  * Parameter 2	:	Pointer to Receiver Buffer
- * Parameter 3	:   Length of the data
+ * Parameter 3	:	Length of the data
  * Return Type	:	uint8_t state, returns state of SPI (READY, BUSY IN TX or BUSY IN RX)
  * Note		:
  * ------------------------------------------------------------------------------------------------------ */
