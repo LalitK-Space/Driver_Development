@@ -1,7 +1,7 @@
 /*
  * 01_Led_toggle.c
  *
- * LEDs are connected as:
+ * LEDs are connected (on STM32F407G-DISC1 Board) as:
  * 	USER LED1 (LD4 GREEN)	->	PD12
  *	USER LED2 (LD3 ORANGE)	->  PD13
  *	USER LED3 (LD5 RED)		->	PD14
