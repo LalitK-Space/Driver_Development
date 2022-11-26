@@ -99,7 +99,7 @@ typedef struct
 #define SPI_EVENT_RX_COMPLETE				2
 #define SPI_EVENT_OVR_ERROR					3			// Only OVRERR is defined in the code
 
-/* -- APIs Supported by SPI driver -- */
+/* -- APIs (prototypes) Supported by this SPI driver -- */
 
 // Peripheral Clock Setup
 // Enable/Disable Peripheral Clock for a given SPI base address
