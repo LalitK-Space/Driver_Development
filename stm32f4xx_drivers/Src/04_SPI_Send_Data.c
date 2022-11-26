@@ -4,7 +4,7 @@
  *  -> SPI SEND DATA (Polling based)<-
  *  -> Without SLAVE
  *  -> JUST to test "SendData" Function
- *  -> [Important]Since, SLAVE device is not present, SSM is enabled -> refer : Description of SPI_SSIConfig();
+ *  -> [Important] Since, SLAVE device is not present, SSM is enabled -> refer : Description of SPI_SSIConfig();
  *
  *  1. Check which pins can be used as SPIx pins (ALternate Functions)
  *
@@ -127,8 +127,5 @@ void SPI2_Init(void)
 
 	/* -- Initialize the SPI Peripheral -- */
 	SPI_Init(&SPI2Handle);
-
-
-
 
 }
