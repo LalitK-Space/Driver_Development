@@ -184,7 +184,7 @@ typedef struct
 
 }SYSCFG_RegDef_t;
 
-// Generic Registers Structure for all SPI Peripherals
+// Generic Registers Structure for all SPI
 typedef struct
 {
 	volatile uint32_t CR1;		/* - Control Register 1 										  - Offset :0x00 */
@@ -198,7 +198,6 @@ typedef struct
 	volatile uint32_t I2SPR;	/* - I2S Pre-scalar Register									  - Offset :0x20 */
 
 }SPI_RegDef_t;
-
 
 /* -- Peripheral Definitions (Peripheral Base Address type-casted to x_RegDef_t) -- */
 
@@ -343,7 +342,6 @@ typedef struct
 #define IRQ_NO_SPI2				36
 #define IRQ_NO_SPI3				51
 #define IRQ_NO_SPI4				84
-
 
 /* -- Bit Position Definitions of SPI Peripheral -- */
 

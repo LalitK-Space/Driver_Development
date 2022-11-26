@@ -199,7 +199,6 @@ typedef struct
 
 }SPI_RegDef_t;
 
-
 /* -- Peripheral Definitions (Peripheral Base Address type-casted to x_RegDef_t) -- */
 
 // For GPIO
@@ -343,7 +342,6 @@ typedef struct
 #define IRQ_NO_SPI2				36
 #define IRQ_NO_SPI3				51
 #define IRQ_NO_SPI4				84
-
 
 /* -- Bit Position Definitions of SPI Peripheral -- */
 

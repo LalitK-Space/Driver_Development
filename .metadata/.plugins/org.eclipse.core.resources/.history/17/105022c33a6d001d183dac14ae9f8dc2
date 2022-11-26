@@ -1,7 +1,7 @@
 /*
  * 											stm32f407xx.h
  *
- * This file Contains all the micro-controller specific details:
+ * Contains all the micro-controller specific details:
  * 	- Base addresses of various Memories
  * 	- Base addresses of Buses
  * 	- Base addresses of Peripherals
@@ -11,17 +11,14 @@
  * 	- Peripheral Register bit definition
  * 	- Other useful micro-controller configuration MACROS
  *
- *	- NOTE (Important) - :
+ *	NOTE (Important):
  * A new folder named 'drivers' is created with subfolders 'Inc' and 'Src'to keep the drivers' specific header and source file.
  * To include this 'driver > Src' folder in the build process, this folder must be manually added to the build path.
  * To do so (in eclipse-based IDEs):
  * - Firstly, in the project's properties.
 			In the C/C++ build, make sure 'exclude resources from the build' is unchecked.
    - To include the path if 'drivers > Inc,' follow the following steps:
-            Go to Project Properties -> C/C++ Build -> Settings -> MCU GCC Compiler -> Include Path
-            							->  Add new include path of folder -> (select) Workspace
-            							-> Select project  -> Select 'Inc' in 'drivers' folder
-            							-> (click) OK
+            Go to Project Properties ->  C/C++ Build -> Settings -> MCU GCC Compiler -> Include Path ->  Add new include path of folder -> (select) Workspace -> Select project  -> Select 'Inc' in 'drivers; folder -> (click) OK
  * Now, This new folder will be included in the project's build process.
 */
 
@@ -55,6 +52,7 @@
 #define PRI_BITS_IMPLEMENTED		4
 
 /* -- Base Addresses of Memories -- */
+
 #define FLASH_BASEADDR				0x08000000U
 #define SRAM1_BASEADDR				0x20000000U			 // 112 KB
 #define SRAM2_BASEADDR				0x20001C00U			 // 16 KB
@@ -63,7 +61,7 @@
 
 
 /* -- Base Addresses of Bus Domains: AHBx and APBx Bus Peripheral Base Addresses -- */
-#define PERIPH_BASEADDR				0x40000000U			 // Peripheral Base Address
+#define PERIPH_BASEADDR				0x40000000U			 //Peripheral Base Address
 #define APB1PERIPH_BASEADDR         PERIPH_BASEADDR		 // APB1 base = Peripheral base
 #define APB2PERIPH_BASEADDR 		0x40010000U			 // Peripheral Base + Offset 0x00010000
 #define AHB1PERIPH_BASEADDR			0x40020000U			 // Peripheral Base + Offset 0x00020000
@@ -103,10 +101,9 @@
 #define USART1_BASEADDR				((APB2PERIPH_BASEADDR) + (0x1000))
 #define USART6_BASEADDR				((APB2PERIPH_BASEADDR) + (0x1400))
 
-
 /* -- Peripheral Register Definition Structure -- */
 
-// Generic Registers Structure for all GPIOs (Some registers may be highly volatile. That's why 'volatile' is used)
+// Generic Registers Structure for all GPIOs (Some registers maybe highly volatile in nature thats why volatile)
 typedef struct
 {
 	volatile uint32_t MODER;	/* - port mode register 										  - Offset :0x00 */
@@ -184,7 +181,7 @@ typedef struct
 
 }SYSCFG_RegDef_t;
 
-// Generic Registers Structure for all SPI Peripherals
+// Generic Registers Structure for all SPI
 typedef struct
 {
 	volatile uint32_t CR1;		/* - Control Register 1 										  - Offset :0x00 */
@@ -198,7 +195,6 @@ typedef struct
 	volatile uint32_t I2SPR;	/* - I2S Pre-scalar Register									  - Offset :0x20 */
 
 }SPI_RegDef_t;
-
 
 /* -- Peripheral Definitions (Peripheral Base Address type-casted to x_RegDef_t) -- */
 
@@ -343,7 +339,6 @@ typedef struct
 #define IRQ_NO_SPI2				36
 #define IRQ_NO_SPI3				51
 #define IRQ_NO_SPI4				84
-
 
 /* -- Bit Position Definitions of SPI Peripheral -- */
 
