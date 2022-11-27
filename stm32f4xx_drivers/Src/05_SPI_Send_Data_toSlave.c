@@ -1,22 +1,23 @@
 /*
  * 05_SPI_Send_Data_toSlave.c
  *
- * -> SPI Master (STM) and SPI Slave (Arduino) Communication <-
+ * -> SPI Master and SPI Slave Communication <-
  *
- *	When the button on the master is pressed, master should send string of data to the Arduino slave connected.
- *	The data received by the Arduino will be displayed on the Arduino Serial Monitor.
+ *	When the button on the master is pressed, the master will send a string of data to the connected slave device.
  *
  *	SPI CONFIGURATION USED:
  *		- Full Duplex Mode
- *		- STM (this application) is Master and Arduino is Slave
+ *		- STM (this application) is Master
  *		- DFF bit is 0 (8-Bits data)
  *		- Hardware slave Management is used (SSM bit is 0)
  *		- SCLK speed is 2MHz, peripheral clock is 16MHz
  *
- *	-> In this application, Master will not receive anything from the Slave. (Configuration of MISO pin can be ignored)
+ *	-> In this application, the Master will not receive anything from the Slave.
+ *	   (Configuration of MISO pin can be ignored)
  *
- *	-> [IMPORTANT] : Slave doesn't know how many bytes of data master is going to send. So Master first should
- *					 send the number of bytes information which slave is going to receive and then send the data.
+ *	-> [IMPORTANT] : The Slave doesn't know how many bytes of data the Master will send.
+ *					 So Master first should send the number of bytes of information that
+ *					 the Slave is going to receive and then send the data.
  *
  *
  *	SPI Peripheral Used			:	SPI2
