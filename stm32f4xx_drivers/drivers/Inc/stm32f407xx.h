@@ -204,14 +204,14 @@ typedef struct
 {
 	volatile uint32_t CR1;		/* - Control Register 1 								- Offset :0x00 */
 	volatile uint32_t CR2;		/* - Control Register 2		 							- Offset :0x04 */
-	volatile uint32_t OAR1;		/* - Own Address Register 1			 						- Offset :0x08 */
-	volatile uint32_t OAR2;		/* - Own Address Register 2 									- Offset :0x0C */
-	volatile uint32_t DR;	/* - Data Register 								- Offset :0x10 */
-	volatile uint32_t SR1;	/* - Status Register 1		 							- Offset :0x14 */
-	volatile uint32_t SR2;	/* - Status Register 2 									- Offset :0x18 */
-	volatile uint32_t CCR;	/* - Clock Control Register	 							- Offset :0x1C */
-	volatile uint32_t TRISE;	/* - TRISE Register								- Offset :0x20 */
-	volatile uint32_t FLTR;	/* - FLTR Register								- Offset :0x24 */
+	volatile uint32_t OAR1;		/* - Own Address Register 1			 					- Offset :0x08 */
+	volatile uint32_t OAR2;		/* - Own Address Register 2 								- Offset :0x0C */
+	volatile uint32_t DR;		/* - Data Register 									- Offset :0x10 */
+	volatile uint32_t SR1;		/* - Status Register 1		 							- Offset :0x14 */
+	volatile uint32_t SR2;		/* - Status Register 2 									- Offset :0x18 */
+	volatile uint32_t CCR;		/* - Clock Control Register	 							- Offset :0x1C */
+	volatile uint32_t TRISE;	/* - TRISE Register									- Offset :0x20 */
+	volatile uint32_t FLTR;		/* - FLTR Register									- Offset :0x24 */
 
 }I2C_RegDef_t;
 
@@ -406,57 +406,57 @@ typedef struct
 
 // For I2C_CR1
 #define I2C_CR1_PE			0
-#define I2C_CR1_SMBUS		1
-#define I2C_CR1_SMBTYPE		3
-#define I2C_CR1_ENARP		4
-#define I2C_CR1_ENPEC		5
-#define I2C_CR1_ENGC		6
-#define I2C_CR1_NOSTRETCH   7
-#define I2C_CR1_START		8
-#define I2C_CR1_STOP		9
+#define I2C_CR1_SMBUS			1
+#define I2C_CR1_SMBTYPE			3
+#define I2C_CR1_ENARP			4
+#define I2C_CR1_ENPEC			5
+#define I2C_CR1_ENGC			6
+#define I2C_CR1_NOSTRETCH  		7
+#define I2C_CR1_START			8
+#define I2C_CR1_STOP			9
 #define I2C_CR1_ACK			10
 #define I2C_CR1_POS			11
 #define I2C_CR1_PEC			12
-#define I2C_CR1_ALERT		13
-#define I2C_CR1_SWRST		14
+#define I2C_CR1_ALERT			13
+#define I2C_CR1_SWRST			14
 
 // For I2C_CR2
-#define I2C_CR2_FREQ		0	// FREQ[5:0]
-#define I2C_CR2_ITERREN		8
-#define I2C_CR2_ITEVTEN		9
-#define I2C_CR2_ITBUFEN		10
-#define I2C_CR2_DMAEN		11
-#define I2C_CR2_LAST		12
+#define I2C_CR2_FREQ			0	// FREQ[5:0]
+#define I2C_CR2_ITERREN			8
+#define I2C_CR2_ITEVTEN			9
+#define I2C_CR2_ITBUFEN			10
+#define I2C_CR2_DMAEN			11
+#define I2C_CR2_LAST			12
 
 // For I2C_SR1
 #define I2C_SR1_SB			0
-#define I2C_SR1_ADDR		1
+#define I2C_SR1_ADDR			1
 #define I2C_SR1_BTF			2
-#define I2C_SR1_ADD10		3
-#define I2C_SR1_STOPF		4
-#define I2C_SR1_RXNE		6
+#define I2C_SR1_ADD10			3
+#define I2C_SR1_STOPF			4
+#define I2C_SR1_RXNE			6
 #define I2C_SR1_TXE			7
-#define I2C_SR1_BERR		8
-#define I2C_SR1_ARLO		9
+#define I2C_SR1_BERR			8
+#define I2C_SR1_ARLO			9
 #define I2C_SR1_AF			10
 #define I2C_SR1_OVR			11
-#define I2C_SR1_PECERR		12
-#define I2C_SR1_TIMEOUT		14
-#define I2C_SR1_SMBALERT	15
+#define I2C_SR1_PECERR			12
+#define I2C_SR1_TIMEOUT			14
+#define I2C_SR1_SMBALERT		15
 
 // FOR I2C_SR2
 #define I2C_SR2_MSL			0
-#define I2C_SR2_BUSY		1
+#define I2C_SR2_BUSY			1
 #define I2C_SR2_TRA			2
-#define I2C_SR2_GENCALL		4
-#define I2C_SR2_SMBDEFAULT	5
-#define I2C_SR2_SMBHOST		6
-#define I2C_SR2_DUALF		7
+#define I2C_SR2_GENCALL			4
+#define I2C_SR2_SMBDEFAULT		5
+#define I2C_SR2_SMBHOST			6
+#define I2C_SR2_DUALF			7
 #define I2C_SR2_PEC			8	// PEC[7:0]
 
 // FOR I2C_CCR
 #define I2C_CCR_CCR			0	// CCR[11:0]
-#define I2C_CCR_DUTY		14
+#define I2C_CCR_DUTY			14
 #define I2C_CCR_FS			15
 
 /* -- General MACROS -- */
