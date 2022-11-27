@@ -1,20 +1,30 @@
 /*
- * 05_SPI_Send_Data_toSlave.c
+ * 06_SPI_Tx_Rx_Data.c
  *
- * -> SPI Master (STM) and SPI Slave (Arduino) Communication <-
+ * -> SPI Master and SPI Slave Communication <-
  *
- *	When the button on the master is pressed, master should send string of data to the Arduino slave connected.
- *	The data received by the Arduino will be displayed on the Arduino Serial Monitor.
+ * When the button on the Master is pressed, the Master will send one byte of data to the connected slave device
+ * and, in response after receiving data from the Master, will send one byte of data back to the Master.
+ * After receiving the correct data from the Slave, the Master will turn ON an on-board LED
+ * (User LED1 LD4 Green connected in PD12)
  *
  *	SPI CONFIGURATION USED:
  *		- Full Duplex Mode
- *		- STM (this application) is Master and Arduino is Slave
+ *		- STM (this application) is Master
  *		- DFF bit is 0 (8-Bits data)
  *		- Hardware slave Management is used (SSM bit is 0)
  *		- SCLK speed is 2MHz, peripheral clock is 16MHz
  *
- *	-> [IMPORTANT] : Slave doesn't know how many bytes of data master is going to send. So Master first should
- *					 send the number of bytes information which slave is going to receive and then send the data.
+ *	-> [IMPORTANT] : When the Master sends 1 byte of data,
+ *					 in response from the Slave, it always receives 1 byte of data.
+ *					 So, to read from the Slave, first, send some dummy bytes to clear its Rx buffer
+ *					 so that primary data is not corrupted.
+ *
+ *					 Rembember:
+ *					 > (SPI_SendData) Send actual request (data)
+ *					 > (SPI_ReceiveData) Receive a dummy response from the slave
+ *					 > (SPI_SendData) Send dummy byte
+ *					 > (SPI_ReceiveData) Receive Actual data from the slave
  *
  *
  *	SPI Peripheral Used			:	SPI2
@@ -34,18 +44,6 @@
 
 #include "stm32f407xx_spi_drivers.h"
 
-#include <string.h>
-
-/*---------------------- LED CODE ---------------------------------------*/
-#define LED_GREEN  12
-#define LED_ORANGE 13
-#define LED_RED    14
-#define LED_BLUE   15
-
-void led_off(uint8_t led_no);
-void led_on(uint8_t led_no);
-void led_init_all(void);
-/* -----------------------------------------------------------------------*/
 
 // To configure GPIO pins to behave as SPI peripheral
 void SPI2_GPIO_Init(void);
@@ -58,13 +56,6 @@ void GPIO_buttonInit(void);
 
 // Software delay for de-bouncing
 void softDelay(void);
-
-// To verify response from slave
-uint8_t SPI_VerifyResponse(uint8_t ackByte);
-
-/* ---------------------------- LED CODE -------------------------------------- */
-
-/* -----------------------------^ LED CODE ^------------------------------------ */
 
 int main()
 {
@@ -84,9 +75,7 @@ int main()
 	/* -- Dummy Data -- */
 	uint8_t dummyWrite = 0x11;
 	uint8_t dummyRead;
-/* ---------------------------- LED CODE -------------------------------------- */
-	led_init_all();
-/* -----------------------------^ LED CODE ^------------------------------------ */
+
 
 	/* -- Data is transmitted only when button is pressed -- */
 	while (1)
@@ -106,11 +95,11 @@ int main()
 		/* -- Send Data -- */
 
 		// Test Data
-		uint8_t toArduino = 0xF1;	// F1 - F5		// Data to send
-		uint8_t ackBytefromSlave;	// ACK Byte
+		uint8_t toSlave = 0xF1;			// Data to send
+		uint8_t DataBytefromSlave;		// Data Received
 /* -- ------------------------------------------------------------------------ -- */
 		// SEND DATA
-		SPI_SendData(SPI2,&toArduino, 1);
+		SPI_SendData(SPI2,&toSlave, 1);
 
 		// DUMMY READ
 		SPI_ReceiveData(SPI2, &dummyRead, 1);
@@ -118,18 +107,49 @@ int main()
 		// SEND DUMMY BYTES TO RECEIVE RESPONSE
 		SPI_SendData(SPI2,&dummyWrite, 1);
 
-		// READ ACTUAL DATA (ACK BYTE FROM SLAVE)
-		SPI_ReceiveData(SPI2, &ackBytefromSlave, 1);
+		// READ ACTUAL DATA (REQUIRED DATA)
+		SPI_ReceiveData(SPI2, &DataBytefromSlave, 1);
 /* -- ------------------------------------------------------------------------ -- */
-		if (ackBytefromSlave == (uint8_t)0xFF)
+		if (DataBytefromSlave == (uint8_t)0xFF)
 		{
-			led_on(15);
+			// If a correct response is received from the slave, turn ON LED
 
-			led_on(14);
+			/* -- Variable for GPIO Handle Structure -- */
+			GPIO_Handle_t gpio_led;
 
-			led_on(13);
+			/* -- Now, initialize the structure variable -- */
 
-			led_on(12);
+			// Select Port
+			gpio_led.pGPIOx = GPIOD;
+
+			// Pin Configuration: PIN NUMBER
+			gpio_led.GPIO_PinConfig.GPIO_PinNumber = GPIO_Pin_12;
+
+			// Pin Configuration: PIN MODE
+			gpio_led.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
+
+			// Pin Configuration: GPIO SPEED (Not important in this case)
+			gpio_led.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_VERY_HIGH;
+
+			// Pin Configuration: OUTPUT TYPE (Selected -> PUSH-PULL)
+			gpio_led.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+
+			// Pin Configuration: PU-PD Configuration (Selected -> NO PU PD)
+			gpio_led.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
+
+			/* -- Before Calling GPIO Init, Enable Peripheral Clock -- */
+			GPIO_PeriClockControl(GPIOD, ENABLE);
+
+			/* -- Call GPIO Initialization Function and pass address of handle variable as input argument -- */
+			GPIO_Init(&gpio_led);
+
+			// Turn ON LED
+			GPIO_WriteToOutputPin(GPIOD, GPIO_Pin_12, 1);
+
+			softDelay();
+			// Then turn OFF
+			GPIO_WriteToOutputPin(GPIOD, GPIO_Pin_12, 0);
+
 		}
 
 
@@ -242,48 +262,3 @@ void softDelay(void)
 	for(uint32_t i = 0; i < 500000/2; i++);
 }
 
-
-uint8_t SPI_VerifyResponse(uint8_t ackByte)
-{
-	if (ackByte == 0xFF)	// Defined in Arduino Sketch
-	{
-		return 1;
-	}
-	return 0;
-}
-
-
-/* ---------------------- LED CODE ---------------------------------- */
-void led_init_all(void)
-{
-
-	uint32_t *pRccAhb1enr = (uint32_t*)0x40023830;
-	uint32_t *pGpiodModeReg = (uint32_t*)0x40020C00;
-
-
-	*pRccAhb1enr |= ( 1 << 3);
-	//configure LED_GREEN
-	*pGpiodModeReg |= ( 1 << (2 * LED_GREEN));
-	*pGpiodModeReg |= ( 1 << (2 * LED_ORANGE));
-	*pGpiodModeReg |= ( 1 << (2 * LED_RED));
-	*pGpiodModeReg |= ( 1 << (2 * LED_BLUE));
-
-    led_off(LED_GREEN);
-    led_off(LED_ORANGE);
-    led_off(LED_RED);
-    led_off(LED_BLUE);
-}
-
-void led_on(uint8_t led_no)
-{
-  uint32_t *pGpiodDataReg = (uint32_t*)0x40020C14;
-  *pGpiodDataReg |= ( 1 << led_no);
-
-}
-
-void led_off(uint8_t led_no)
-{
-	  uint32_t *pGpiodDataReg = (uint32_t*)0x40020C14;
-	  *pGpiodDataReg &= ~( 1 << led_no);
-
-}
