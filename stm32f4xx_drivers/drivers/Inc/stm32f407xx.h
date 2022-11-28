@@ -342,10 +342,16 @@ typedef struct
 								  (x == GPIOI) ? 8 : 0)
 
 /* -- SPI Peripheral Reset Macros -- */
-#define SPI1_REG_RESET()
-#define SPI2_REG_RESET()
-#define SPI3_REG_RESET()
-#define SPI4_REG_RESET()
+#define SPI1_REG_RESET()		do {(RCC -> APB2RSTR |= (1 << 12)); (RCC -> APB2RSTR &= ~(1 << 12)); } while(0)
+#define SPI2_REG_RESET()		do {(RCC -> APB1RSTR |= (1 << 14)); (RCC -> APB1RSTR &= ~(1 << 14)); } while(0)
+#define SPI3_REG_RESET()		do {(RCC -> APB1RSTR |= (1 << 15)); (RCC -> APB1RSTR &= ~(1 << 15)); } while(0)
+#define SPI4_REG_RESET()		do {(RCC -> APB2RSTR |= (1 << 13)); (RCC -> APB2RSTR &= ~(1 << 13)); } while(0)
+
+
+/* -- I2C Peripheral Reset Macros -- */
+#define I2C1_REG_RESET()		do {(RCC -> APB1RSTR |= (1 << 21)); (RCC -> APB1RSTR &= ~(1 << 21)); } while(0)
+#define I2C2_REG_RESET()		do {(RCC -> APB1RSTR |= (1 << 22)); (RCC -> APB1RSTR &= ~(1 << 22)); } while(0)
+#define I2C3_REG_RESET()		do {(RCC -> APB1RSTR |= (1 << 23)); (RCC -> APB1RSTR &= ~(1 << 23)); } while(0)
 
 
 /* -- IRQ Numbers Macros-- */
