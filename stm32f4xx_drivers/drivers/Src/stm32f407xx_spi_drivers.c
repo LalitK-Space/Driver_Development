@@ -159,7 +159,7 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_DeInit(SPI_RegDef_t *pSPIx)
 {
-	// For Reseting SPI, refer to RCC -> APB2RSTR for SPI1 and SPI2 and RCC -> APB1RSTR for SPI2 and SPI3
+	// For Reseting SPI, refer to RCC -> APB2RSTR for SPI1 and SPI4 and RCC -> APB1RSTR for SPI2 and SPI3
 	// Make respective bit 1 to reset then again make it 0, if kept 1 then Peripheral will always be in reset state
 	// SET and RESET done in MACROS
 	if (pSPIx == SPI1)
