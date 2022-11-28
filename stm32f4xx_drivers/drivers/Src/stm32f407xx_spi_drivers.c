@@ -159,9 +159,30 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_DeInit(SPI_RegDef_t *pSPIx)
 {
-	// For Reseting SPI, refer to RCC->?
+	// For Reseting SPI, refer to RCC -> APB2RSTR for SPI1 and SPI2 and RCC -> APB1RSTR for SPI2 and SPI3
 	// Make respective bit 1 to reset then again make it 0, if kept 1 then Peripheral will always be in reset state
 	// SET and RESET done in MACROS
+	if (pSPIx == SPI1)
+			{
+				SPI1_REG_RESET();
+			}
+			else if (pSPIx == SPI2)
+			{
+				SPI2_REG_RESET();
+			}
+			else if (pSPIx == SPI3)
+			{
+				SPI3_REG_RESET();
+			}
+			else if (pSPIx == SPI4)
+			{
+				SPI4_REG_RESET();
+			}
+			else
+			{
+				// Meh
+			}
+
 
 }
 
@@ -354,6 +375,46 @@ uint8_t SPI_ReceiveData_IT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 {
+	if (EnorDi == ENABLE)
+	{
+		// Interrupt Set Enable Registers NVIC_ISERx
+		if (IRQNumber <= 31)
+		{
+			// Configure ISER0 Register
+			*NVIC_ISER0 |= (1 << IRQNumber);
+		}
+		else if (IRQNumber > 31 && IRQNumber < 64)
+		{
+			// Configure ISER1 Register
+			*NVIC_ISER1 |= (1 << IRQNumber % 32);  // x % 32 to get to second register set and from its 0th bit
+
+		}
+		else if (IRQNumber >= 64 && IRQNumber < 96)
+		{
+			// COnfigure ISER2 Register : Sufficient, no need to configure more ISERx Registers
+			*NVIC_ISER2 |= (1 << IRQNumber % 64);  // x % 64 to get to third register set and from its 0th bit
+		}
+	}
+	else	// Have to write 1 also to clear, writing 0 in ISER makes no effect
+	{
+		// Interrupt Clear Enable Registers NVIC_ISCRx
+		if (IRQNumber <= 31)
+		{
+			// Configure ICER0 Register
+			*NVIC_ICER0 |= (1 << IRQNumber);
+		}
+		else if (IRQNumber > 31 && IRQNumber < 64)
+		{
+			// Configure ICER1 Register
+			*NVIC_ICER1 |= (1 << IRQNumber % 32);  // x % 32 to get to second register set and from its 0th bit
+		}
+		else if (IRQNumber >= 64 && IRQNumber < 96)
+		{
+			// COnfigure ICER2 Register : Sufficient, no need to configure more ICERx Registers
+			*NVIC_ICER2 |= (1 << IRQNumber % 64);  // x % 64 to get to third register set and from its 0th bit
+		}
+	}
+
 
 }
 
@@ -368,6 +429,17 @@ void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
  * ------------------------------------------------------------------------------------------------------ */
 void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 {
+	// There are 60 IPR (Interrupt Priority) registers
+	// Each register is of 32 bits and divided into 4 sections to accommodate 4 Priority values
+
+	// Now to get the right section and right bit field
+	uint8_t iprx		 = IRQNumber / 4;
+	uint8_t iprx_section = IRQNumber % 4;
+
+	// NVIC_PRI_BASEADDR + iprx to jump to the required address
+	// shift value is calculated because lower 4 bits of each section are not implemented
+	uint8_t shiftValue	 = (8 * iprx_section) + (8 - PRI_BITS_IMPLEMENTED);
+	*(NVIC_PRI_BASEADDR + iprx) |= (IRQPriority << shiftValue);
 
 }
 
