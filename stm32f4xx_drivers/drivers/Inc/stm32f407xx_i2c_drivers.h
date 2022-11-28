@@ -47,6 +47,7 @@ typedef struct
 #define I2C_FM_DutyCycle_2		0			// FM Mode t(low)/t(high) = 2
 #define I2C_FM_DutyCycle_16_9	1			// FM Mode t(low)/t(high) = 16/9
 
+
 /* -- APIs Supported by SPI driver -- */
 
 // Peripheral Clock Setup
@@ -68,10 +69,10 @@ void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);	// To confi
 
 // Other Helper APIs
 uint8_t I2C_getFlagStatus (I2C_RegDef_t *pI2Cx, uint32_t FlagName);     // To get Status Register Flags
-void SPI_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);	// To enable or disable the SPI peripheral
+void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);	// To enable or disable the SPI peripheral
 
 // Application Callbacks [To be implemented in the application]
-void SPI_ApplicationEventCallback(I2C_Handle_t *pI2CHandle, uint8_t ApplicationEvent);
+void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle, uint8_t ApplicationEvent);
 
 
 #endif /* INC_STM32F407XX_I2C_DRIVERS_H_ */
