@@ -29,7 +29,7 @@ typedef struct
 	I2C_RegDef_t	*pI2Cx;
 
 	// To hold different I2C configuration
-	I2C_RegDef_t	I2C_Config;
+	I2C_Config_t	I2C_Config;
 
 }I2C_Handle_t;
 
