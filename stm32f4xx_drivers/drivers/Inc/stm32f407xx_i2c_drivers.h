@@ -36,8 +36,8 @@ typedef struct
 /* -- I2C Configuration Macros -- */
 
 // I2C_SCL_SPEED
-#define I2C_SCL_SPEED_SM		100000		// Standard Mode Speed = 100KHz
-#define I2C_SCL_SPEED_FM_4K		400000		// Fast Mode Speed = 400KHz
+#define I2C_SCL_SPEED_SM		100000			// Standard Mode Speed = 100KHz
+#define I2C_SCL_SPEED_FM_4K		400000			// Fast Mode Speed = 400KHz
 
 // I2C_ACK_Control [Disabled by default]
 #define I2C_ACK_ENABLE			1
@@ -45,23 +45,23 @@ typedef struct
 
 // I2C_FM_DutyCycle [Duty Cycle of Serial Clock in Fast Mode]
 #define I2C_FM_DutyCycle_2		0			// FM Mode t(low)/t(high) = 2
-#define I2C_FM_DutyCycle_16_9	1			// FM Mode t(low)/t(high) = 16/9
+#define I2C_FM_DutyCycle_16_9		1			// FM Mode t(low)/t(high) = 16/9
 
 /* -- I2C Status Flags (with Masking details) -- */
-#define I2C_FLAG_SB					(1 << I2C_SR1_SB)
-#define I2C_FLAG_ADDR						(1 << I2C_SR1_ADDR)
-#define I2C_FLAG_BTF						(1 << I2C_SR1_BTF)
-#define I2C_FLAG_ADD10						(1 << I2C_SR1_ADD10)
-#define I2C_FLAG_STOPF						(1 << I2C_SR1_STOPF)
-#define I2C_FLAG_RXNE						(1 << I2C_SR1_RXNE)
-#define I2C_FLAG_TXE						(1 << I2C_SR1_TXE)
-#define I2C_FLAG_BERR						(1 << I2C_SR1_BERR)
-#define I2C_FLAG_ARLO						(1 << I2C_SR1_ARLO)
-#define I2C_FLAG_AF						(1 << I2C_SR1_AF)
-#define I2C_FLAG_OVR						(1 << I2C_SR1_OVR)
-#define I2C_FLAG_PECERR						(1 << I2C_SR1_PECERR)
-#define I2C_FLAG_TIMEOUT						(1 << I2C_SR1_TIMEOUT)
-#define I2C_FLAG_SMBALERT						(1 << I2C_SR1_SMBALERT)
+#define I2C_FLAG_SB			(1 << I2C_SR1_SB)
+#define I2C_FLAG_ADDR			(1 << I2C_SR1_ADDR)
+#define I2C_FLAG_BTF			(1 << I2C_SR1_BTF)
+#define I2C_FLAG_ADD10			(1 << I2C_SR1_ADD10)
+#define I2C_FLAG_STOPF			(1 << I2C_SR1_STOPF)
+#define I2C_FLAG_RXNE			(1 << I2C_SR1_RXNE)
+#define I2C_FLAG_TXE			(1 << I2C_SR1_TXE)
+#define I2C_FLAG_BERR			(1 << I2C_SR1_BERR)
+#define I2C_FLAG_ARLO			(1 << I2C_SR1_ARLO)
+#define I2C_FLAG_AF			(1 << I2C_SR1_AF)
+#define I2C_FLAG_OVR			(1 << I2C_SR1_OVR)
+#define I2C_FLAG_PECERR			(1 << I2C_SR1_PECERR)
+#define I2C_FLAG_TIMEOUT		(1 << I2C_SR1_TIMEOUT)
+#define I2C_FLAG_SMBALERT		(1 << I2C_SR1_SMBALERT)
 
 /* -- APIs Supported by SPI driver -- */
 
