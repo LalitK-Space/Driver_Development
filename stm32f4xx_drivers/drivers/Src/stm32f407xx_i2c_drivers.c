@@ -98,12 +98,12 @@ void I2C_PeriClockControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi)
  * Parameter 1	:	Pointer to I2C Handle
  * Return Type	:	none (void)
  * Note		:	Jobs:
- * 					1. Configure the Mode (Standard or Fast)
- * 					2. Configure the speed of the serial clock (SCL)
- * 					3. Configure the device address (only when device is Slave)
- * 					4. Enable ACking
- * 					5. Configure the rise time for I2C pins (TRISE)
- *				For FREQ configuration, it is known that HSI is 16 MHz, but still it is required to calculate
+ * 			1. Configure the Mode (Standard or Fast)
+ * 			2. Configure the speed of the serial clock (SCL)
+ * 			3. Configure the device address (only when device is Slave)
+ * 			4. Enable ACking
+ * 			5. Configure the rise time for I2C pins (TRISE)
+ *			For FREQ configuration, it is known that HSI is 16 MHz, but still it is required to calculate
  * ------------------------------------------------------------------------------------------------------ */
 void I2C_Init(I2C_Handle_t *pI2CHandle)
 {
@@ -123,15 +123,15 @@ void I2C_Init(I2C_Handle_t *pI2CHandle)
 	tempReg |= RCC_Pclk1_Value() / 1000000U;		// divide by 1000000 to get value 16
 
 	// Configure CR2 with FREQ value
-	pI2CHandle->pI2Cx->CR2 = (tempReg & 0x3F);	// Masking: Only need first 6 bits (FREQ[5:0])
+	pI2CHandle->pI2Cx->CR2 = (tempReg & 0x3F);		// Masking: Only need first 6 bits (FREQ[5:0])
 
 	/* - Configure the Slave Address - */
 
 	// Own Address Register (OAR1 Register) [using 7 bit address format in this driver development]
 	// Bit 0	  : for 7 bit address -> DON'T CARE
-	// Bits[7:1]  : 7 bit address
-	// Bits[9:8]  : for 7 bit address -> DON'T CARE
-	// Bits[13:10]: RESERVED (MUST BE KEPT at reset value)
+	// Bits[7:1] 	  : 7 bit address
+	// Bits[9:8]      : for 7 bit address -> DON'T CARE
+	// Bits[13:10]    : RESERVED (MUST BE KEPT at reset value)
 	// Bit 14	  : SHOULD always be at 1 by software
 	// Bit 15	  : ADDMODE : 0 for 7 bit address (10 bit address not acknowledged)
 
@@ -147,7 +147,7 @@ void I2C_Init(I2C_Handle_t *pI2CHandle)
 	/* - Configure the Serial Clock Speed - */
 
 	// Configure the CCR fields (CCR Register)
-	// Bits[11:0]	:	CCR field
+	// Bits[11:0]	: CCR field
 
 	// CCR calculations
 	uint16_t ccr_value = 0;
@@ -160,8 +160,8 @@ void I2C_Init(I2C_Handle_t *pI2CHandle)
 
 		// STEP b: Calculate value of CCR for Standard Mode frequency
 		/* Formula to calculate CCR
-		 *	 T(high scl) = CCR * T(pclk)
-		 *	 T(low scl)	= CCR * T(pclk)
+		 *	T(high scl) = CCR * T(pclk)
+		 *	T(low scl) = CCR * T(pclk)
 		 *   Assuming, T(high) = T(low) of SCL
 		 *   => T(scl) = 2 * CCR * T(pclk1)
 		 *   => CCR = T(scl) / 2 * T(pclk1)
@@ -196,9 +196,9 @@ void I2C_Init(I2C_Handle_t *pI2CHandle)
 		 *
 		 * 	CCR = f(pclk1) / (3 * f(scl))
 		 *
-		 * if DUTY (I2C_FM_DutyCycle) = 1 then, T(low) = ~ 1.7 * T(high)	[to reach 400kHz]
+		 * if DUTY (I2C_FM_DutyCycle) = 1 then, T(low) = ~ 1.7 * T(high)   [to reach 400kHz]
 		 *
-		 *  T(high) = 9 * CCR * T(pclk1)
+		 *  	T(high) = 9 * CCR * T(pclk1)
 		 *	T(low)  = 16 * CCR * T(pclk1)
 		 *
 		 *	CCR = f(pclk1) / (25 * f(scl))
@@ -237,8 +237,8 @@ void I2C_Init(I2C_Handle_t *pI2CHandle)
 	// TRISE[5:0] Maximum rise time in Fast Mode or Standard Mode
 	// Get values from I2C specification
 	/* Configure with value => (Max_SCL_rise_time / T(pclk1) + 1 [Reference Manual]
-	 *						=> [Trise(max) / T(pclk1)] + 1
-	 *						=> [Trise(max) * f(pclk1)] + 1
+	 *			=> [Trise(max) / T(pclk1)] + 1
+	 *			=> [Trise(max) * f(pclk1)] + 1
 	 *
 	 */
 
@@ -510,15 +510,15 @@ void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi)
  * Parameters	:	none
  * Return Type	:	(uint32_t) clock frequency
  * Note		:	For STM32F407G-DISC1 board,
- *				(From Clock Tree)
- *					 	[HSE or HSI(used) or PLLCLK or PLLR]
- *					 			-> [AHB_PRESC] -> [APB1_PRESC] -> [APB1 peripheral clock]
+ *			(From Clock Tree)
+ *				 [HSE or HSI(used) or PLLCLK or PLLR]
+ *				 -> [AHB_PRESC] -> [APB1_PRESC] -> [APB1 peripheral clock]
  *
- *				Steps:
- *					1. Find source [HSE or HSI(used) or PLLCLK or PLLR]  (from RCC)
- *					2. Calculate AHB Prescaler
- *					3. Calculate APB1 Prescaler
- *					4. Then, derive clock frequency for APB1 peripheral (I2Cx is connected to APB1 Bus)
+ *			Steps:
+ *				1. Find source [HSE or HSI(used) or PLLCLK or PLLR]  (from RCC)
+ *				2. Calculate AHB Prescaler
+ *				3. Calculate APB1 Prescaler
+ *				4. Then, derive clock frequency for APB1 peripheral (I2Cx is connected to APB1 Bus)
  *
  * ------------------------------------------------------------------------------------------------------ */
 uint32_t RCC_Pclk1_Value(void)
@@ -669,7 +669,7 @@ static void I2C_GenerateStartCondition(I2C_RegDef_t *pI2Cx)
  * Description	:	To Execute Address Phase
  *
  * Parameter 1	:	Base address of the I2C peripheral
- * Parameter 2	:   Slave Address
+ * Parameter 2	:       Slave Address
  * Return Type	:	none (void)
  * Note		:	Private helper function
  *
@@ -726,7 +726,7 @@ static void I2C_GenerateStopCondition(I2C_RegDef_t *pI2Cx)
 	// Step a: In register CR1 (bit 9: STP)
 	/*
 	 * SET and CLEARED by the software and CLEARED by hardware when STOP condition is detected,
-	 * 										   set by hardware when a timeout error is detected
+	 * set by hardware when a timeout error is detected
 	 *
 	 * In MASTER Mode
 	 * 0: No stop generation
