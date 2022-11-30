@@ -7,8 +7,23 @@
 
 #include"stm32f407xx_i2c_drivers.h"
 
+
+/* -- Helper Functions prototypes  -- */
+
 // To get the value if Pclk1
 uint32_t RCC_Pclk1_Value(void);
+
+// To generate START condition
+static void I2C_GenerateStartCondition(I2C_RegDef_t *pI2Cx);
+
+// To generate STOP condition
+static void I2C_GenerateStopCondition(I2C_RegDef_t *pI2Cx);
+
+// To Execute Address Phase
+static void I2C_ExecuteAddressPhase(I2C_RegDef_t *pI2Cx, uint8_t SlaveAddress);
+
+// To clear ADDR Flag
+static void I2C_ClearADDRFlag(I2C_RegDef_t *pI2Cx);
 
 // array to store AHB prescaler values
 uint16_t ahb_prescaler[8] = {2,4,8,16,64,128,256,512};
@@ -217,7 +232,38 @@ void I2C_Init(I2C_Handle_t *pI2CHandle)
 	pI2CHandle->pI2Cx->CCR = tempReg;
 
 	/* - Configure the rise time for I2C pins - */
+
 	// Configure the TRISE Register
+	// TRISE[5:0] Maximum rise time in Fast Mode or Standard Mode
+	// Get values from I2C specification
+	/* Configure with value => (Max_SCL_rise_time / T(pclk1) + 1 [Reference Manual]
+	 *						=> [Trise(max) / T(pclk1)] + 1
+	 *						=> [Trise(max) * f(pclk1)] + 1
+	 *
+	 */
+
+	// Check if Mode is FM or SM
+	if (pI2CHandle->I2C_Config.I2C_SCL_Speed <= I2C_SCL_SPEED_SM)
+	{
+		// Mode: SM
+
+		// [Trise(max) * f(pclk1)] + 1
+		// Trise (max) for standard mode is 1000ns (I2C specification)
+		tempReg = (RCC_Pclk1_Value() / 1000000U) + 1;
+
+	}
+	else
+	{
+		// Mode: FM
+
+		// [Trise(max) * f(pclk1)] + 1
+		// Trise (max) for fast mode is 300ns (I2C specification)
+		tempReg = (((RCC_Pclk1_Value() * 300 ) / 1000000000U) + 1);
+
+	}
+
+	// Configure the TRISE Register with value in tempReg
+	pI2CHandle->pI2Cx->TRISE = tempReg & 0x3F;		// TRISE[5:0] Mask others
 
 }
 
@@ -257,8 +303,78 @@ void I2C_DeInit(I2C_RegDef_t *pI2Cx)
 
 /* -- > SPI Send and Receive Data < -- */
 
+/* ------------------------------------------------------------------------------------------------------
+ * Name		:	I2C_MasterSendData
+ * Description	:	I2C Peripheral Send Data API:
+ *			Transmit data present in TX Buffer
+ * Parameter 1	:	Base address of the I2C peripheral
+ * Parameter 2 	:	Pointer to data
+ * Parameter 3	:   	Length of the Data to send
+ * Parameter 4	: 	Slave Address
+ * Return Type	:	none (void)
+ * Note		:	Blocking API (Polling), function call will wait until all the bytes are transmitted.
+ * ------------------------------------------------------------------------------------------------------ */
+void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t LenOfData, uint8_t SlaveAddress)
+{
+	/* - Step1: Generate the START condition - */
+	I2C_GenerateStartCondition(pI2CHandle->pI2Cx);
+
+	/* - Step2: Confirm generation of START condition - */
+	// By checking SB Flag in SR1
+	// Until SB is cleared, SCL will be stretched (SCL will be pulled to LOW)
+	while (!(I2C_getFlagStatus(pI2CHandle->pI2Cx, I2C_FLAG_SB)));
+	// Clearing is done (by reading)
+
+	/* - Step3: Send the address of the Slave with R/~W bit as 0 - */
+	// Total 8 bits (7 bit Slave address + 1 R/~W bit)
+	I2C_ExecuteAddressPhase(pI2CHandle->pI2Cx, SlaveAddress);
 
 
+	/* - Step4: Confirm completetion of Address Phase - */
+	// By checking the ADDR Flag in SR1
+	while (!(I2C_getFlagStatus(pI2CHandle->pI2Cx, I2C_FLAG_ADDR)));
+
+
+	/* - Step5: Clear the ADDR Flag (according to its software sequence) - */
+	// Until ADDR is cleared, SCL will be stretched (SCL will be pulled to LOW)
+	// Clearing: Cleared by software by reading SR1 Register followed reading SR2 or by hardware when PE = 0
+	I2C_ClearADDRFlag(pI2CHandle->pI2Cx);
+
+	/* - Step6: Send the data until LenOfData becomes 0 - */
+	// Before sending, confirm DR is empty or not (TXE Flag)
+	while (LenOfData > 0)
+	{
+		// Wait till TxE is Set
+		while (!(I2C_getFlagStatus(pI2CHandle->pI2Cx, I2C_FLAG_TXE)));
+
+		// Send data (Copy to DR)
+		pI2CHandle->pI2Cx->DR = *pTxBuffer;
+
+		// Increment Tx Buffer to point at next memory
+		pTxBuffer++;
+
+		// Decrement Lenth of Data
+		LenOfData--;
+
+	}
+
+
+	/* - Step7: When LenOfData becomes 0, wait for TxE = 1 and BTF = 1 before generating STOP condition - */
+	// TxE = 1 and BTF = 1 means, both Shoft register and DR are empty
+
+	// Wait till TxE is Set
+	while (!(I2C_getFlagStatus(pI2CHandle->pI2Cx, I2C_FLAG_TXE)));
+
+	// Wait till BTF is Set
+	while (!(I2C_getFlagStatus(pI2CHandle->pI2Cx, I2C_FLAG_BTF)));
+
+
+	/* - Step8: Generate the STOP condition - */
+	// Master does not have to wait for the STOP condition completetion
+	// Generating STOP condition, clears BTF
+	I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
+
+}
 
 
 
@@ -385,6 +501,8 @@ void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi)
 	}
 }
 
+
+/*------------------------------------ HELPER FUNCTIONS IMPLEMENTATIONS ----------------------------*/
 
 /* ------------------------------------------------------------------------------------------------------
  * Name		:	RCC_Pclk1_Value
@@ -517,7 +635,111 @@ uint32_t RCC_Pclk1_Value(void)
 }
 
 
+/* ------------------------------------------------------------------------------------------------------
+ * Name		:	I2C_GenerateStartCondition
+ * Description	:	To generate START condition
+ *
+ * Parameter 1	:	Base address of the I2C peripheral
+ * Return Type	:	none (void)
+ * Note		:	Private helper function
+ * 			To generate START condition
+ * ------------------------------------------------------------------------------------------------------ */
+static void I2C_GenerateStartCondition(I2C_RegDef_t *pI2Cx)
+{
+	// Step a: In register CR1 (bit 8: START)
+	/*
+	 * SET and CLEARED by the software and CLEARED by hardware when start is senr or PE = 0
+	 *
+	 * In MASTER Mode
+	 * 0: No start generation
+	 * 1: Repeated start generation
+	 *
+	 * In SLAVE Mode
+	 * 0: No start generation
+	 * 1: Start generation when bus is free
+	 *
+	 * */
+	pI2Cx->CR1 |= (1 << I2C_CR1_START);	// (1 << 8)
+
+}
 
 
+/* ------------------------------------------------------------------------------------------------------
+ * Name		:	I2C_ExecuteAddressPhase
+ * Description	:	To Execute Address Phase
+ *
+ * Parameter 1	:	Base address of the I2C peripheral
+ * Parameter 2	:   Slave Address
+ * Return Type	:	none (void)
+ * Note		:	Private helper function
+ *
+ * ------------------------------------------------------------------------------------------------------ */
+static void I2C_ExecuteAddressPhase(I2C_RegDef_t *pI2Cx, uint8_t SlaveAddress)
+{
+	/* - Total 8 bits (7 bit Slave address + 1 R/~W bit - */
+
+	// Make space for R/~W bit (Shift Slave address by 1)
+	SlaveAddress = (SlaveAddress << 1);
+
+	// clear the 0th bit (0 -> writing)
+	SlaveAddress &= ~(1);
+
+	// Put data (SlaveAddress) in Data Register
+	pI2Cx->DR = SlaveAddress;
+
+}
+
+
+/* ------------------------------------------------------------------------------------------------------
+ * Name		:	I2C_ClearADDRFlag
+ * Description	:	To clear ADDR Flag
+ *
+ * Parameter 1	:	Base address of the I2C peripheral
+ * Return Type	:	none (void)
+ * Note		:	Private helper function
+ *
+ * ------------------------------------------------------------------------------------------------------ */
+static void I2C_ClearADDRFlag(I2C_RegDef_t *pI2Cx)
+{
+	// Clearing: Cleared by software by reading SR1 Register followed reading SR2 or by hardware when PE = 0
+	// Simply read SR1 and SR2
+	uint32_t dummyRead;
+	dummyRead = pI2Cx->SR1;
+	dummyRead = pI2Cx->SR2;
+
+	(void) dummyRead;
+
+}
+
+
+/* ------------------------------------------------------------------------------------------------------
+ * Name		:	I2C_GenerateStopCondition
+ * Description	:	To generate STOP condition
+ *
+ * Parameter 1	:	Base address of the I2C peripheral
+ * Return Type	:	none (void)
+ * Note		:	Private helper function
+ * 			To generate STOP condition
+ * ------------------------------------------------------------------------------------------------------ */
+static void I2C_GenerateStopCondition(I2C_RegDef_t *pI2Cx)
+{
+	// Step a: In register CR1 (bit 9: STP)
+	/*
+	 * SET and CLEARED by the software and CLEARED by hardware when STOP condition is detected,
+	 * 										   set by hardware when a timeout error is detected
+	 *
+	 * In MASTER Mode
+	 * 0: No stop generation
+	 * 1: Stop generation AFTER the current byte transfer or after the current start condition is sent
+	 *
+	 * In SLAVE Mode
+	 * 0: No stop generation
+	 * 1: Release the SCL and SDA line after current byte transfer
+	 *
+	 * */
+
+	pI2Cx->CR1 |= (1 << I2C_CR1_STOP);	// (1 << 9)
+
+}
 
 
