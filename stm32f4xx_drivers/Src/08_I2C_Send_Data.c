@@ -118,7 +118,7 @@ void I2C1_Init(void)
 {
 	// Handle defined in global space
 	/* -- Base Address of the I2C1 Peripheral -- */
-	I2C1Handle.pI2Cx				= I2C1;
+	I2C1Handle.pI2Cx			 = I2C1;
 
 	/* -- Peripheral Configuration -- */
 	I2C1Handle.I2C_Config.I2C_ACK_Control	 =	I2C_ACK_ENABLE;   	// Enable ACKing
