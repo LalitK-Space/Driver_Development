@@ -75,7 +75,7 @@ void I2C_DeInit(I2C_RegDef_t *pI2Cx);
 
 // Data Send and Receive
 void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t LenOfData, uint8_t SlaveAddress);
-
+void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_t LenOfData, uint8_t SlaveAddress);
 
 // IRQ Configuration and ISR Handling
 void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);     	// To configure IRQ number of the I2C
@@ -84,7 +84,8 @@ void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);	// To confi
 
 // Other Helper APIs
 uint8_t I2C_getFlagStatus (I2C_RegDef_t *pI2Cx, uint32_t FlagName);     // To get Status Register Flags
-void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);	// To enable or disable the SPI peripheral
+void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);	// To enable or disable the I2C peripheral
+void I2C_ManageACK(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);			// To enable or disable ACKing
 
 // Application Callbacks [To be implemented in the application]
 void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle, uint8_t ApplicationEvent);
