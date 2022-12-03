@@ -66,6 +66,9 @@ int main()
 	// MUST BE ENABLED AFTER ALL THE REQUIRED CONFIGURATIONS
 	I2C_PeripheralControl(I2C1,ENABLE);
 
+	// Enable ACKing after Enabling I2C Peripheral (if PE = 1 then only ACK = 1 [CR1])
+	// for reading data from the Slave (> 1 byte)
+
 	/* -- Data is transmitted only when button is pressed -- */
 	while (1)
 	{
