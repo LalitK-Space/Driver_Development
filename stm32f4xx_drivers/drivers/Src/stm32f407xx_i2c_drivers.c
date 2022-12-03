@@ -426,22 +426,21 @@ void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_
 		// a. Set ACK bit to 0 [DISABLE ACKing (in CR)]
 		I2C_ManageACK(pI2CHandle->pI2Cx, I2C_ACK_DISABLE);
 
-		// b. Set STOP bit to 1 [STOP condition (in CR)]
-		I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
 
-		// c. Clear ADDR flag [ADDR = 0]
+		// b. Clear ADDR flag [ADDR = 0]
 		// Clearing: Cleared by software by reading SR1 Register followed reading SR2 or by hardware when PE = 0
 		I2C_ClearADDRFlag(pI2CHandle->pI2Cx);
 		// Data reception begins: AFTER clearing ADDR Flag
 
 
-		// d. Wait until RxNE becomes 1
+		// c. Wait until RxNE becomes 1
 		while (!(I2C_getFlagStatus(pI2CHandle->pI2Cx, I2C_FLAG_RXNE)));
+
+		// d. Set STOP bit to 1 [STOP condition (in CR)]
+		I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
 
 		// e. Read the data in Rx Buffer (Read DR)
 		*pRxBuffer = pI2CHandle->pI2Cx->DR;
-
-		return;
 
 	}
 
@@ -572,7 +571,7 @@ void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
  * Name		:	I2C_getFlagStatus
  * Description	:	To get the Flags info from Status Register
  *
- * Parameter 1	:	Pointer to I2C handle
+ * Parameter 1	:	Base address of the I2C peripheral
  * Parameter 2  :   	Flag Name
  * Return Type	:	True or False (1 or 0)
  * Note		:
@@ -592,7 +591,7 @@ uint8_t I2C_getFlagStatus (I2C_RegDef_t *pI2Cx, uint32_t FlagName)
  * Name		:	I2C_PeripheralControl
  * Description	:	To Enable or Disable the I2C Peripheral
  *
- * Parameter 1	:	Pointer to I2C peripheral base address
+ * Parameter 1	:	Base address of the I2C peripheral
  * Parameter 2  :   	Enable or Disable Macro
  * Return Type	:	none
  * Note		:	I2C Peripherals are disabled by default
@@ -615,7 +614,7 @@ void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi)
  * Name		:	I2C_ManageACK
  * Description	:	To Enable or Disable the I2C ACKing
  *
- * Parameter 1	:	Pointer to I2C peripheral base address
+ * Parameter 1	:	Base address of the I2C peripheral
  * Parameter 2  :   	Enable or Disable Macro
  * Return Type	:	none
  * Note		:
