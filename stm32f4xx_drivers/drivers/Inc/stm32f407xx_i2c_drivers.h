@@ -65,8 +65,8 @@ typedef struct
 
 /* -- General MACROS -- */
 // Repeated Start
-#define I2C_REPEATED_START_EN	ENABLE
-#define I2C_REPEATED_START_DI	DISABLE
+#define I2C_REPEATED_START_EN		ENABLE
+#define I2C_REPEATED_START_DI		DISABLE
 
 
 /* -- APIs Supported by SPI driver -- */
