@@ -63,6 +63,12 @@ typedef struct
 #define I2C_FLAG_TIMEOUT		(1 << I2C_SR1_TIMEOUT)
 #define I2C_FLAG_SMBALERT		(1 << I2C_SR1_SMBALERT)
 
+/* -- General MACROS -- */
+// Repeated Start
+#define I2C_REPEATED_START_EN	ENABLE
+#define I2C_REPEATED_START_DI	DISABLE
+
+
 /* -- APIs Supported by SPI driver -- */
 
 // Peripheral Clock Setup
@@ -74,8 +80,8 @@ void I2C_Init(I2C_Handle_t *pI2CHandle);
 void I2C_DeInit(I2C_RegDef_t *pI2Cx);
 
 // Data Send and Receive
-void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t LenOfData, uint8_t SlaveAddress);
-void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_t LenOfData, uint8_t SlaveAddress);
+void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t LenOfData, uint8_t SlaveAddress, uint8_t repeatedStart);
+void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_t LenOfData, uint8_t SlaveAddress, uint8_t repeatedStart);
 
 // IRQ Configuration and ISR Handling
 void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);     	// To configure IRQ number of the I2C
