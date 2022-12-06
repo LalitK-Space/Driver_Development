@@ -319,10 +319,11 @@ void I2C_DeInit(I2C_RegDef_t *pI2Cx)
  * Parameter 2 	:	Pointer to data
  * Parameter 3	:   	Length of the Data to send
  * Parameter 4	: 	Slave Address
+ * Parameter 5	:	RepeatedStart (MACRO I2C_REPEATED_START_EN/_DI), to enable or disable repeated start
  * Return Type	:	none (void)
  * Note		:	Blocking API (Polling), function call will wait until all the bytes are transmitted.
  * ------------------------------------------------------------------------------------------------------ */
-void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t LenOfData, uint8_t SlaveAddress)
+void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t LenOfData, uint8_t SlaveAddress, uint8_t repeatedStart)
 {
 	/* - Step 1: Generate the START condition - */
 	I2C_GenerateStartCondition(pI2CHandle->pI2Cx);
@@ -382,7 +383,11 @@ void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t L
 	/* - Step 8: Generate the STOP condition - */
 	// Master does not have to wait for the STOP condition completetion
 	// Generating STOP condition, clears BTF
-	I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
+	if (repeatedStart == I2C_REPEATED_START_DI)
+	{
+		// Check for Repeated Start then generate STOP condition
+		I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
+	}
 
 }
 
@@ -395,10 +400,11 @@ void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t L
  * Parameter 2 	:	Pointer to Rx buffer
  * Parameter 3	:   	Length of the Data to send
  * Parameter 4	: 	Slave Address
+ * Parameter 5	:	RepeatedStart (MACRO I2C_REPEATED_START_EN/_DI), to enable or disable repeated start
  * Return Type	:	none (void)
  * Note		:	Blocking API (Polling), function call will wait until all the bytes are received.
  * ------------------------------------------------------------------------------------------------------ */
-void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_t LenOfData, uint8_t SlaveAddress)
+void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_t LenOfData, uint8_t SlaveAddress, uint8_t repeatedStart)
 {
 	/* - Step 1: Generate the START condition - */
 	I2C_GenerateStartCondition(pI2CHandle->pI2Cx);
@@ -437,7 +443,11 @@ void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_
 		while (!(I2C_getFlagStatus(pI2CHandle->pI2Cx, I2C_FLAG_RXNE)));
 
 		// d. Set STOP bit to 1 [STOP condition (in CR)]
-		I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
+		if (repeatedStart == I2C_REPEATED_START_DI)
+		{
+			// Check for Repeated Start then generate STOP condition
+			I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
+		}
 
 		// e. Read the data in Rx Buffer (Read DR)
 		*pRxBuffer = pI2CHandle->pI2Cx->DR;
@@ -466,7 +476,11 @@ void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_
 				I2C_ManageACK(pI2CHandle->pI2Cx, I2C_ACK_DISABLE);
 
 				//  Set STOP bit to 1 [STOP condition (in CR)]
-				I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
+				if (repeatedStart == I2C_REPEATED_START_DI)
+				{
+					// Check for Repeated Start then generate STOP condition
+					I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
+				}
 
 			}
 
