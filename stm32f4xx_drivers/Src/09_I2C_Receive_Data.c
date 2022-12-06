@@ -98,18 +98,19 @@ int main()
 
 		// 1. Master writes to Slave (request for length of data (1 Byte)) [R/~W = 0]
 		requestCode = 0x51;		// Request length information
-		I2C_MasterSendData(&I2C1Handle, &requestCode, 1,SLAVE_ADDRESS);
+		I2C_MasterSendData(&I2C1Handle, &requestCode, 1,SLAVE_ADDRESS,I2C_REPEATED_START_EN);
 
 		// 2. Master reads from Slave (length information (1 Byte)) [R/~W = 1]
 		// Store length information in 'lengthRxData'
-		I2C_MasterReceiveData(&I2C1Handle, &lengthRxData, 1,SLAVE_ADDRESS);
+		I2C_MasterReceiveData(&I2C1Handle, &lengthRxData, 1,SLAVE_ADDRESS,I2C_REPEATED_START_EN);
 
 		// 3. Master writes to Slave (request for data) [R/~W = 0]
 		requestCode = 0x52;		// Request data
-		I2C_MasterSendData(&I2C1Handle, &requestCode, 1,SLAVE_ADDRESS);
+		I2C_MasterSendData(&I2C1Handle, &requestCode, 1,SLAVE_ADDRESS,I2C_REPEATED_START_EN);
 
 		// 4. Master reads from Slave (data (x Bytes)) [R/~W = 1]
-		I2C_MasterReceiveData(&I2C1Handle, RxData, lengthRxData,SLAVE_ADDRESS);
+		// Repeated Start is disabled [wants to end the communication]
+		I2C_MasterReceiveData(&I2C1Handle, RxData, lengthRxData,SLAVE_ADDRESS,I2C_REPEATED_START_DI);
 
 	}
 
