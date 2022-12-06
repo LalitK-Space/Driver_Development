@@ -79,7 +79,7 @@ int main()
 
 	/* -- Request Code -- */
 	uint8_t requestCode;		// 0x51 -> Request for length information
-								// 0x52 -> Request for data
+					// 0x52 -> Request for data
 
 	/* -- Length of data (slave wants to send) -- */
 	uint8_t lengthRxData;
@@ -183,7 +183,7 @@ void GPIO_buttonInit(void)
 		gpio_button.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_SPEED_VERY_HIGH;
 
 		// Pin Configuration: PU-PD Configuration (Selected ->NO PU PD, As PIN is already PULLED-DOWN -> Schematics)
-		gpio_button.GPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_NO_PUPD;
+		gpio_button.GPIO_PinConfig.GPIO_PinPuPdControl 		= GPIO_NO_PUPD;
 
 		/* -- Before Calling GPIO Init, Enable Peripheral Clock -- */
 		// Clock will be enabled in GPIO_init();
