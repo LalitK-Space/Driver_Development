@@ -80,7 +80,7 @@ int main()
 		softDelay();
 
 		/* -- Send Data -- */
-		I2C_MasterSendData(&I2C1Handle, TxData, strlen((char *)TxData), SLAVE_ADDRESS);
+		I2C_MasterSendData(&I2C1Handle, TxData, strlen((char *)TxData), SLAVE_ADDRESS, I2C_REPEATED_START_DI);
 
 	}
 
