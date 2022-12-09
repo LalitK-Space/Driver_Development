@@ -502,6 +502,120 @@ void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_
 
 }
 
+
+/* ------------------------------------------------------------------------------------------------------
+ * Name		:	I2C_MasterSendData_IT
+ * Description	:	I2C Peripheral Interrupt Based Send Data API:
+ *			Transmit data present in TX Buffer
+ * Parameter 1	:	Base address of the I2C peripheral
+ * Parameter 2 	:	Pointer to data
+ * Parameter 3	:   	Length of the Data to send
+ * Parameter 4	: 	Slave Address
+ * Parameter 5	:	RepeatedStart (MACRO I2C_REPEATED_START_EN/_DI), to enable or disable repeated start
+ * Return Type	:	uint8_t (State)
+ * Note		:	Triggers the START conditiona and enables all the required CONTROL BITS
+ * ------------------------------------------------------------------------------------------------------ */
+uint8_t I2C_MasterSendData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t LenOfData, uint8_t SlaveAddress, uint8_t repeatedStart)
+{
+	// Get state of I2C peripheral
+	uint8_t state = pI2CHandle->TxRxState;
+
+	// Only when Peripheral is NOT busy
+	if( (state != I2C_BUSY_IN_TX) && (state != I2C_BUSY_IN_RX))
+	{
+		// a. Save the Tx buffer address and length information in a global variable
+		pI2CHandle->pTxBuffer = pTxBuffer;		// Saving Tx Buffer Address
+		pI2CHandle->TxDataLength = LenOfData;	// Saving Length Information
+
+		// b. Mark the I2C state as busy in transmission
+		pI2CHandle->TxRxState = I2C_BUSY_IN_TX; // State
+
+		// c. Save Device/Slave address
+		pI2CHandle->DeviceAdddress = SlaveAddress; // Device/Slave Address
+
+		// d. Save Repeated Start (Enable or Disable)
+		pI2CHandle->RepeatedStart = repeatedStart; // Repeated Start
+
+		// e. Generate the START condition
+		I2C_GenerateStartCondition(pI2CHandle->pI2Cx);
+
+		// f. Enable ITBUFEN Control Bit
+		pI2CHandle->pI2Cx->CR2 |= (1 << I2C_CR2_ITBUFEN);
+
+		// g. Enable ITEVFEN Control Bit
+		pI2CHandle->pI2Cx->CR2 |= (1 << I2C_CR2_ITEVTEN);
+
+		// h. Enable ITERREN Control Bit
+		pI2CHandle->pI2Cx->CR2 |= (1 << I2C_CR2_ITERREN);
+
+		// i. Data transmision will be handled by the ISR code
+
+	}
+
+	return state;
+
+
+}
+
+
+/* ------------------------------------------------------------------------------------------------------
+ * Name		:	I2C_MasterReceiveData_IT
+ * Description	:	I2C Peripheral Interrupt Based Receive Data API:
+ *			read data present in Shift register
+ * Parameter 1	:	Base address of the I2C peripheral
+ * Parameter 2 	:	Pointer to Rx buffer
+ * Parameter 3	:   	Length of the Data to send
+ * Parameter 4	: 	Slave Address
+ * Parameter 5	:	RepeatedStart (MACRO I2C_REPEATED_START_EN/_DI), to enable or disable repeated start
+ * Return Type	:	uint8_t (State)
+ * Note		:
+ * ------------------------------------------------------------------------------------------------------ */
+uint8_t I2C_MasterReceiveData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_t LenOfData, uint8_t SlaveAddress, uint8_t repeatedStart)
+{
+	// Get state of I2C peripheral
+	uint8_t state = pI2CHandle->TxRxState;
+
+	// Only when Peripheral is NOT busy
+	if( (state != I2C_BUSY_IN_TX) && (state != I2C_BUSY_IN_RX))
+	{
+		// a. Save the Tx buffer address and length information in a global variable
+		pI2CHandle->pRxBuffer = pRxBuffer;		// Saving Rx Buffer Address
+		pI2CHandle->RxDataLength = LenOfData;	// Saving Length Information
+
+		// b. Mark the I2C state as busy in reception
+		pI2CHandle->TxRxState = I2C_BUSY_IN_RX; // State
+
+		// c. Save Device/Slave address
+		pI2CHandle->DeviceAdddress = SlaveAddress; // Device/Slave Address
+
+		// d. Rx Data Size for ISR Code to manage Data Reception
+		pI2CHandle->RxSize = LenOfData;
+
+		// e. Save Repeated Start (Enable or Disable)
+		pI2CHandle->RepeatedStart = repeatedStart; // Repeated Start
+
+		// f. Generate the START condition
+		I2C_GenerateStartCondition(pI2CHandle->pI2Cx);
+
+		// g. Enable ITBUFEN Control Bit
+		pI2CHandle->pI2Cx->CR2 |= (1 << I2C_CR2_ITBUFEN);
+
+		// i. Enable ITEVFEN Control Bit
+		pI2CHandle->pI2Cx->CR2 |= (1 << I2C_CR2_ITEVTEN);
+
+		// j. Enable ITERREN Control Bit
+		pI2CHandle->pI2Cx->CR2 |= (1 << I2C_CR2_ITERREN);
+
+		// k. Data reception will be handled by the ISR code
+
+	}
+
+	return state;
+
+}
+
+
+
 /* -- > IRQ Configuration and ISR Handling < -- */
 /* ------------------------------------------------------------------------------------------------------
  * Name		:	I2C_IRQInterruptConfig
