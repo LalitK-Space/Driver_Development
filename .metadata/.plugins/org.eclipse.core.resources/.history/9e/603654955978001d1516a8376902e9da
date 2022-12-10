@@ -79,17 +79,9 @@ typedef struct
 #define I2C_BUSY_IN_TX					2
 
 /* -- Possible I2C Application Events (Application callback) -- */
-// Events
 #define I2C_EVENT_TX_COMPLETE				0
 #define I2C_EVENT_RX_COMPLETE				1
 #define I2C_EVENT_STOP						2
-
-// Errors
-#define I2C_ERROR_BERR  					3
-#define I2C_ERROR_ARLO 					4
-#define I2C_ERROR_AF    					5
-#define I2C_ERROR_OVR   					6
-#define I2C_ERROR_TIMEOUT 					7
 
 /* -- General MACROS -- */
 // Repeated Start
