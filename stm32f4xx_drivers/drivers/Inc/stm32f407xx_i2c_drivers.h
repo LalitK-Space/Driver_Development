@@ -34,12 +34,12 @@ typedef struct
 	// Required for I2C Data Tx & Rx APIs in Interrupt Mode
 	uint8_t		*pTxBuffer;			// To store appplication's Tx Buffer address
 	uint8_t		*pRxBuffer;			// To store appplication's Tx Buffer address
-	uint32_t 	TxDataLength;		// Tx Length
-	uint32_t 	RxDataLength;		// Rx Length
+	uint32_t 	TxDataLength;			// Tx Length
+	uint32_t 	RxDataLength;			// Rx Length
 	uint8_t		TxRxState;			// Communication States (I2C is Half Duplex so 1 variable to represent state)
-	uint8_t		DeviceAdddress;		// To store Slave/Device address
+	uint8_t		DeviceAdddress;			// To store Slave/Device address
 	uint32_t	RxSize;				// To store Rx size
-	uint8_t		RepeatedStart;		// to store Repeated Start value (Sr)
+	uint8_t		RepeatedStart;			// to store Repeated Start value (Sr)
 
 }I2C_Handle_t;
 
@@ -74,22 +74,22 @@ typedef struct
 #define I2C_FLAG_SMBALERT		(1 << I2C_SR1_SMBALERT)
 
 /* -- Possible I2C Application States (used in Data Tx and Rx APIs in Interrupt Mode) -- */
-#define I2C_READY					0
-#define I2C_BUSY_IN_RX					1
-#define I2C_BUSY_IN_TX					2
+#define I2C_READY			0
+#define I2C_BUSY_IN_RX			1
+#define I2C_BUSY_IN_TX			2
 
 /* -- Possible I2C Application Events (Application callback) -- */
 // Events
-#define I2C_EVENT_TX_COMPLETE				0
-#define I2C_EVENT_RX_COMPLETE				1
-#define I2C_EVENT_STOP						2
+#define I2C_EVENT_TX_COMPLETE		0
+#define I2C_EVENT_RX_COMPLETE		1
+#define I2C_EVENT_STOP			2
 
 // Errors
-#define I2C_ERROR_BERR  					3
-#define I2C_ERROR_ARLO 					4
-#define I2C_ERROR_AF    					5
-#define I2C_ERROR_OVR   					6
-#define I2C_ERROR_TIMEOUT 					7
+#define I2C_ERROR_BERR  		3
+#define I2C_ERROR_ARLO 			4
+#define I2C_ERROR_AF    		5
+#define I2C_ERROR_OVR   		6
+#define I2C_ERROR_TIMEOUT 		7
 
 /* -- General MACROS -- */
 // Repeated Start
@@ -116,7 +116,7 @@ void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_
 uint8_t I2C_MasterSendData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t LenOfData, uint8_t SlaveAddress, uint8_t repeatedStart);
 uint8_t I2C_MasterReceiveData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_t LenOfData, uint8_t SlaveAddress, uint8_t repeatedStart);
 
-// Close Reception and Transmission of Data [In interrupt Mode]
+// Close Reception and Transmission of Data [In Interrupt Mode]
 void I2C_Close_SendData(I2C_Handle_t *pI2CHandle);
 void I2C_Close_ReceiveData(I2C_Handle_t *pI2CHandle);
 
@@ -124,8 +124,8 @@ void I2C_Close_ReceiveData(I2C_Handle_t *pI2CHandle);
 void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);     	// To configure IRQ number of the I2C
 void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);	// To configure the priority
 
-void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle);	// TO handle interrupt by I2C EVENTS
-void I2C_ER_IRQHandling(I2C_Handle_t *pI2CHandle);	// To handle interrupts by I2C ERRORS
+void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle);			// TO handle interrupt by I2C EVENTS
+void I2C_ER_IRQHandling(I2C_Handle_t *pI2CHandle);			// To handle interrupts by I2C ERRORS
 
 // Other Helper APIs
 uint8_t I2C_getFlagStatus (I2C_RegDef_t *pI2Cx, uint32_t FlagName);     // To get Status Register Flags
