@@ -1025,6 +1025,87 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle)
  * ------------------------------------------------------------------------------------------------------ */
 void I2C_ER_IRQHandling(I2C_Handle_t *pI2CHandle)
 {
+	/* - Check why interrupt is triggered and handle accordingly - */
+
+	// Temporary variables to hold the status flag
+	uint32_t temp_a, temp_b;
+
+	// Check status of ITERREN Control Bit [CR2]
+	temp_b = (pI2CHandle->pI2Cx->CR2) & (1 << I2C_CR2_ITERREN);
+
+	/* -Check for Bus Error- */
+	temp_a = (pI2CHandle->pI2Cx->SR1) & (1 << I2C_SR1_BERR);
+	if(temp_a && temp_b)
+	{
+		/* -True: Error is BUS ERROR- */
+
+		// 1. Clear the BUS ERROR FLAG
+		pI2CHandle->pI2Cx->SR1 &= ~(1 << I2C_SR1_BERR);
+
+		// 2. Notify the Application: BUS ERROR
+		I2C_ApplicationEventCallback(pI2CHandle, I2C_ERROR_BERR);
+
+	}
+
+
+	/* -Check for Arbitration Lost Error- */
+	temp_a = (pI2CHandle->pI2Cx->SR1) & (1 << I2C_SR1_ARLO);
+	if(temp_a && temp_b)
+	{
+		/* -True: Error is ARBITRATION LOST ERROR- */
+
+		// 1. Clear the ARBITRATION LOST ERROR FLAG
+		pI2CHandle->pI2Cx->SR1 &= ~(1 << I2C_SR1_ARLO);
+
+		// 2. Notify the Application: ARBITRATION LOST ERROR
+		I2C_ApplicationEventCallback(pI2CHandle, I2C_ERROR_ARLO);
+
+	}
+
+
+	/* -Check for ACK Failure Error- */
+	temp_a = (pI2CHandle->pI2Cx->SR1) & (1 << I2C_SR1_AF);
+	if(temp_a && temp_b)
+	{
+		/* -True: Error is ACK FAILURE ERROR- */
+
+		// 1. Clear the ACK FAILURE ERROR FLAG
+		pI2CHandle->pI2Cx->SR1 &= ~(1 << I2C_SR1_AF);
+
+		// 2. Notify the Application: ACK FAILURE ERROR
+		I2C_ApplicationEventCallback(pI2CHandle, I2C_ERROR_AF);
+
+	}
+
+
+	/* -Check for Overrun/Underrun Error- */
+	temp_a = (pI2CHandle->pI2Cx->SR1) & (1 << I2C_SR1_OVR);
+	if(temp_a && temp_b)
+	{
+		/* -True: Error is OVERRUN/UNDERUN ERROR- */
+
+		// 1. Clear the OVERRUN/UNDERUN ERROR FLAG
+		pI2CHandle->pI2Cx->SR1 &= ~(1 << I2C_SR1_OVR);
+
+		// 2. Notify the Application: OVERRUN/UNDERUN ERROR
+		I2C_ApplicationEventCallback(pI2CHandle, I2C_ERROR_OVR);
+
+	}
+
+
+	/* -Check for Time-Out Error- */
+	temp_a = (pI2CHandle->pI2Cx->SR1) & (1 << I2C_SR1_TIMEOUT);
+	if(temp_a && temp_b)
+	{
+		/* -True: Error is TIME-OUT ERROR- */
+
+		// 1. Clear the TIME-OUT ERROR FLAG
+		pI2CHandle->pI2Cx->SR1 &= ~(1 << I2C_SR1_TIMEOUT);
+
+		// 2. Notify the Application: TIME-OUT ERROR
+		I2C_ApplicationEventCallback(pI2CHandle, I2C_ERROR_TIMEOUT);
+
+	}
 
 }
 
