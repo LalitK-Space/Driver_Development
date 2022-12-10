@@ -98,7 +98,7 @@ void I2C_PeriClockControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi)
  * Name		:	I2C_Init
  * Description	:	Peripheral Initialize API:
  *			To initialize the given I2C peripheral.
- * Parameter 1	:	Pointer to I2C Handle
+ * Parameter 1	:	Handle pointer variable
  * Return Type	:	none (void)
  * Note		:	Jobs:
  * 			1. Configure the Mode (Standard or Fast)
@@ -315,7 +315,7 @@ void I2C_DeInit(I2C_RegDef_t *pI2Cx)
  * Name		:	I2C_MasterSendData
  * Description	:	I2C Peripheral Send Data API:
  *			Transmit data present in TX Buffer
- * Parameter 1	:	Base address of the I2C peripheral
+ * Parameter 1	:	Handle pointer variable
  * Parameter 2 	:	Pointer to data
  * Parameter 3	:   	Length of the Data to send
  * Parameter 4	: 	Slave Address
@@ -396,7 +396,7 @@ void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t L
  * Name		:	I2C_MasterReceiveData
  * Description	:	I2C Peripheral receive Data API:
  *			read data present in Shift register
- * Parameter 1	:	Base address of the I2C peripheral
+ * Parameter 1	:	Handle pointer variable
  * Parameter 2 	:	Pointer to Rx buffer
  * Parameter 3	:   	Length of the Data to send
  * Parameter 4	: 	Slave Address
@@ -507,7 +507,7 @@ void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_
  * Name		:	I2C_MasterSendData_IT
  * Description	:	I2C Peripheral Interrupt Based Send Data API:
  *			Transmit data present in TX Buffer
- * Parameter 1	:	Base address of the I2C peripheral
+ * Parameter 1	:	Handle pointer variable
  * Parameter 2 	:	Pointer to data
  * Parameter 3	:   	Length of the Data to send
  * Parameter 4	: 	Slave Address
@@ -525,16 +525,16 @@ uint8_t I2C_MasterSendData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint
 	{
 		// a. Save the Tx buffer address and length information in a global variable
 		pI2CHandle->pTxBuffer = pTxBuffer;		// Saving Tx Buffer Address
-		pI2CHandle->TxDataLength = LenOfData;	// Saving Length Information
+		pI2CHandle->TxDataLength = LenOfData;		// Saving Length Information
 
 		// b. Mark the I2C state as busy in transmission
-		pI2CHandle->TxRxState = I2C_BUSY_IN_TX; // State
+		pI2CHandle->TxRxState = I2C_BUSY_IN_TX; 	// State
 
 		// c. Save Device/Slave address
-		pI2CHandle->DeviceAdddress = SlaveAddress; // Device/Slave Address
+		pI2CHandle->DeviceAdddress = SlaveAddress; 	// Device/Slave Address
 
 		// d. Save Repeated Start (Enable or Disable)
-		pI2CHandle->RepeatedStart = repeatedStart; // Repeated Start
+		pI2CHandle->RepeatedStart = repeatedStart; 	// Repeated Start
 
 		// e. Generate the START condition [SB will be SET and Interrupt will be generated (SB EVENT)]
 		I2C_GenerateStartCondition(pI2CHandle->pI2Cx);
@@ -562,7 +562,7 @@ uint8_t I2C_MasterSendData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint
  * Name		:	I2C_MasterReceiveData_IT
  * Description	:	I2C Peripheral Interrupt Based Receive Data API:
  *			read data present in Shift register
- * Parameter 1	:	Base address of the I2C peripheral
+ * Parameter 1	:	Handle pointer variable
  * Parameter 2 	:	Pointer to Rx buffer
  * Parameter 3	:   	Length of the Data to send
  * Parameter 4	: 	Slave Address
@@ -580,19 +580,19 @@ uint8_t I2C_MasterReceiveData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, u
 	{
 		// a. Save the Tx buffer address and length information in a global variable
 		pI2CHandle->pRxBuffer = pRxBuffer;		// Saving Rx Buffer Address
-		pI2CHandle->RxDataLength = LenOfData;	// Saving Length Information
+		pI2CHandle->RxDataLength = LenOfData;		// Saving Length Information
 
 		// b. Mark the I2C state as busy in reception
-		pI2CHandle->TxRxState = I2C_BUSY_IN_RX; // State
+		pI2CHandle->TxRxState = I2C_BUSY_IN_RX; 	// State
 
 		// c. Save Device/Slave address
-		pI2CHandle->DeviceAdddress = SlaveAddress; // Device/Slave Address
+		pI2CHandle->DeviceAdddress = SlaveAddress; 	// Device/Slave Address
 
 		// d. Rx Data Size for ISR Code to manage Data Reception
 		pI2CHandle->RxSize = LenOfData;
 
 		// e. Save Repeated Start (Enable or Disable)
-		pI2CHandle->RepeatedStart = repeatedStart; // Repeated Start
+		pI2CHandle->RepeatedStart = repeatedStart; 	// Repeated Start
 
 		// f. Generate the START condition
 		I2C_GenerateStartCondition(pI2CHandle->pI2Cx);
@@ -622,8 +622,8 @@ uint8_t I2C_MasterReceiveData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, u
  * Parameter 1	:	Handle pointer variable
  * Return Type	:	none (void)
  * Note		:	Jobs:
- * 					1. Disable interrupt
- * 					2. Reset Member Elements (I2C Handle structure)
+ * 				1. Disable interrupt
+ * 				2. Reset Member Elements (I2C Handle structure)
  *
  * ------------------------------------------------------------------------------------------------------ */
 void I2C_Close_SendData(I2C_Handle_t *pI2CHandle)
@@ -650,8 +650,8 @@ void I2C_Close_SendData(I2C_Handle_t *pI2CHandle)
  * Parameter 1	:	Handle pointer variable
  * Return Type	:	none (void)
  * Note		:	Jobs:
- * 					1. Disable interrupt
- * 					2. Reset Member Elements (I2C Handle structure)
+ * 				1. Disable interrupt
+ * 				2. Reset Member Elements (I2C Handle structure)
  *
  * ------------------------------------------------------------------------------------------------------ */
 void I2C_Close_ReceiveData(I2C_Handle_t *pI2CHandle)
@@ -760,10 +760,10 @@ void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
  * Name		:	I2C_EV_IRQHandling
  * Description	:	To handle the interrupts generated by I2C EVENTS:
  *
- * Parameter 1	:	Pointer to handle structure
+ * Parameter 1	:	Handle pointer variable
  * Return Type	:	none (void)
  * Note		:	Event Interrupt can be generated by:
- * 					-> SB, ADDR, ADD10, STOPF, BTF, TxE, ITBUFEN, RxNE
+ * 				-> SB, ADDR, ADD10, STOPF, BTF, TxE, ITBUFEN, RxNE
  * 				ADDR10 is not implemented (NOT using 10 bit Address Mode)
  * ------------------------------------------------------------------------------------------------------ */
 void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle)
@@ -841,11 +841,11 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle)
 
 		/*
 		 * When BTF is SET AND :
-		 * 	a. TXE is SET	: During Transmission	: [Shift Register] AND [Data Register] are BOTH EMPTY
-		 *			 								  [BTF = 1 AND TXE = 1] and Clock will be stretched
+		 * 	a. TXE is SET: During Transmission: [Shift Register] AND [Data Register] are BOTH EMPTY
+		 *			 		    [BTF = 1 AND TXE = 1] and Clock will be stretched
 		 *
-		 * 	b. RXNE is SET	: During Reception		: [Shift Register] AND [Data Register] are BOTH FULL
-		 * 											  [BTF = 1 AND RXNE = 1] and Clock will be stretched
+		 * 	b. RXNE is SET: During Reception: [Shift Register] AND [Data Register] are BOTH FULL
+		 * 					  [BTF = 1 AND RXNE = 1] and Clock will be stretched
 		 * 	*/
 
 		// Decision is based on application STATE
@@ -1019,7 +1019,7 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle)
  * Name		:	I2C_ER_IRQHandling
  * Description	:	To handle the interrupts generated by I2C ERRORS:
  *
- * Parameter 1	:	Pointer to handle structure
+ * Parameter 1	:	Handle pointer variable
  * Return Type	:	none (void)
  * Note		:
  * ------------------------------------------------------------------------------------------------------ */
