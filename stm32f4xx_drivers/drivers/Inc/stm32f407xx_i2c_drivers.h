@@ -78,7 +78,10 @@ typedef struct
 #define I2C_BUSY_IN_RX					1
 #define I2C_BUSY_IN_TX					2
 
-
+/* -- Possible I2C Application Events (Application callback) -- */
+#define I2C_EVENT_TX_COMPLETE				0
+#define I2C_EVENT_RX_COMPLETE				1
+#define I2C_EVENT_STOP						2
 
 /* -- General MACROS -- */
 // Repeated Start
@@ -105,12 +108,16 @@ void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_
 uint8_t I2C_MasterSendData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t LenOfData, uint8_t SlaveAddress, uint8_t repeatedStart);
 uint8_t I2C_MasterReceiveData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_t LenOfData, uint8_t SlaveAddress, uint8_t repeatedStart);
 
-
+// Close Reception and Transmission of Data [In interrupt Mode]
+void I2C_Close_SendData(I2C_Handle_t *pI2CHandle);
+void I2C_Close_ReceiveData(I2C_Handle_t *pI2CHandle);
 
 // IRQ Configuration and ISR Handling
 void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);     	// To configure IRQ number of the I2C
 void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);	// To configure the priority
 
+void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle);	// TO handle interrupt by I2C EVENTS
+void I2C_ER_IRQHandling(I2C_Handle_t *pI2CHandle);	// To handle interrupts by I2C ERRORS
 
 // Other Helper APIs
 uint8_t I2C_getFlagStatus (I2C_RegDef_t *pI2Cx, uint32_t FlagName);     // To get Status Register Flags
