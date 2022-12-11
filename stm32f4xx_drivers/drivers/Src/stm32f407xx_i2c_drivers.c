@@ -610,6 +610,36 @@ uint8_t I2C_MasterReceiveData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, u
 
 
 /* ------------------------------------------------------------------------------------------------------
+ * Name		:	I2C_SlaveSendData
+ * Description	:	Receive Data from master
+ * Parameter 1	:	Base address of the I2C peripheral
+ * Parameter 2 	:	uint8_t DataToMaster
+ * Return Type	:	none (void)
+ * Note		:	When a request is received from the master, the Slave will send data one byte at a time
+ * 				(uint8_t Data)
+ * ------------------------------------------------------------------------------------------------------ */
+void I2C_SlaveSendData(I2C_RegDef_t *pI2Cx, uint8_t DataToMaster)
+{
+	/* -Load Data in Data Register (DR) - */
+	pI2Cx->DR = DataToMaster;
+}
+
+
+/* ------------------------------------------------------------------------------------------------------
+ * Name		:	I2C_SlaveReceiveData
+ * Description	:	Receive Data from master
+ * Parameter 1	:	Base address of the I2C peripheral
+ * Return Type	:	uint8_t (dataFromMaster)
+ * Note		:	Returns data a byte at a time received from the master.
+ * ------------------------------------------------------------------------------------------------------ */
+uint8_t I2C_SlaveReceiveData(I2C_RegDef_t *pI2Cx)
+{
+	/* -Return contents of Data Register (DR) - */
+	return (uint8_t) pI2Cx->DR;
+}
+
+
+/* ------------------------------------------------------------------------------------------------------
  * Name		:	I2C_Close_SendData
  * Description	:	To close the Data Transmission in Interrupt Mode
  *
@@ -995,6 +1025,23 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle)
 
 			}
 		}
+		else
+		{
+			/* -Executes ONLY in Slave Mode- */
+			// TxE is SET meaning request for data
+
+			// Only when TRA is 1 [SR2]
+			/*
+			 * if TRA = 1 Data Byte Transmitted : Device is in Transmitter Mode
+			 *    TRA = 0 Data Byte Received	: Device is in Receiver Mode
+			 *
+			 * */
+			if ( (pI2CHandle->pI2Cx->SR2) & (1 << I2C_SR2_TRA) )
+				{
+					// Slave is in Transmitter Mode
+					I2C_ApplicationEventCallback(pI2CHandle, I2C_EVENT_DATA_REQUEST);
+				}
+		}
 
 	}
 
@@ -1065,6 +1112,24 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle)
 				}
 
 			}
+		}
+		else
+		{
+			/* -Executes ONLY in Slave Mode- */
+			// RxNE is SET meaning Receive Data
+
+			// Only when TRA is 0 [SR2]
+			/*
+			 * if TRA = 1 Data Byte Transmitted : Device is in Transmitter Mode
+			 *    TRA = 0 Data Byte Received	: Device is in Receiver Mode
+			 *
+			 * */
+			if ( !((pI2CHandle->pI2Cx->SR2) & (1 << I2C_SR2_TRA)) )
+				{
+					// Slave is in Receiver Mode
+					I2C_ApplicationEventCallback(pI2CHandle, I2C_EVENT_DATA_RECEIVE);
+				}
+
 		}
 	}
 
