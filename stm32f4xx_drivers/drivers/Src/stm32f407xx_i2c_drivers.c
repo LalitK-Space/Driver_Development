@@ -13,12 +13,6 @@
 // To get the value if Pclk1
 uint32_t RCC_Pclk1_Value(void);
 
-// To generate START condition
-static void I2C_GenerateStartCondition(I2C_RegDef_t *pI2Cx);
-
-// To generate STOP condition
-static void I2C_GenerateStopCondition(I2C_RegDef_t *pI2Cx);
-
 // To Execute Address Phase : for Writing (Master Tx -> Slave Rx)
 static void I2C_ExecuteAddressPhase_Write(I2C_RegDef_t *pI2Cx, uint8_t SlaveAddress);
 
@@ -677,6 +671,67 @@ void I2C_Close_ReceiveData(I2C_Handle_t *pI2CHandle)
 
 }
 
+
+/* ------------------------------------------------------------------------------------------------------
+ * Name		:	I2C_GenerateStartCondition
+ * Description	:	To generate START condition
+ *
+ * Parameter 1	:	Base address of the I2C peripheral
+ * Return Type	:	none (void)
+ * Note		:
+ * 			To generate START condition
+ * ------------------------------------------------------------------------------------------------------ */
+void I2C_GenerateStartCondition(I2C_RegDef_t *pI2Cx)
+{
+	// Step a: In register CR1 (bit 8: START)
+	/*
+	 * SET and CLEARED by the software and CLEARED by hardware when start is senr or PE = 0
+	 *
+	 * In MASTER Mode
+	 * 0: No start generation
+	 * 1: Repeated start generation
+	 *
+	 * In SLAVE Mode
+	 * 0: No start generation
+	 * 1: Start generation when bus is free
+	 *
+	 * */
+	pI2Cx->CR1 |= (1 << I2C_CR1_START);	// (1 << 8)
+
+}
+
+
+/* ------------------------------------------------------------------------------------------------------
+ * Name		:	I2C_GenerateStopCondition
+ * Description	:	To generate STOP condition
+ *
+ * Parameter 1	:	Base address of the I2C peripheral
+ * Return Type	:	none (void)
+ * Note		:
+ * 			To generate STOP condition
+ * ------------------------------------------------------------------------------------------------------ */
+void I2C_GenerateStopCondition(I2C_RegDef_t *pI2Cx)
+{
+	// Step a: In register CR1 (bit 9: STP)
+	/*
+	 * SET and CLEARED by the software and CLEARED by hardware when STOP condition is detected,
+	 * set by hardware when a timeout error is detected
+	 *
+	 * In MASTER Mode
+	 * 0: No stop generation
+	 * 1: Stop generation AFTER the current byte transfer or after the current start condition is sent
+	 *
+	 * In SLAVE Mode
+	 * 0: No stop generation
+	 * 1: Release the SCL and SDA line after current byte transfer
+	 *
+	 * */
+
+	pI2Cx->CR1 |= (1 << I2C_CR1_STOP);	// (1 << 9)
+
+}
+
+
 /* -- > IRQ Configuration and ISR Handling < -- */
 /* ------------------------------------------------------------------------------------------------------
  * Name		:	I2C_IRQInterruptConfig
@@ -730,6 +785,7 @@ void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 	}
 }
 
+
 /* ------------------------------------------------------------------------------------------------------
  * Name		:	I2C_IRQPriorityConfig
  * Description	:	To configure the priority of the interrupt:
@@ -773,7 +829,7 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle)
 	/* - Check why interrupt is triggered and handle accordingly - */
 
 	// Temporary variables to hold the status flag
-	uint8_t temp_a, temp_b, temp_c;
+	uint32_t temp_a, temp_b, temp_c;
 
 	// For Event Interrupt to Trigger, ITEVFEN Bit MUST be Enabled [CR2]
 	temp_a = pI2CHandle->pI2Cx->CR2 & (1 << I2C_CR2_ITEVTEN);
@@ -927,7 +983,7 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle)
 				if (pI2CHandle->TxDataLength > 0)
 				{
 					// a. Load Data in Data Register
-					pI2CHandle->pI2Cx->DR = * (pI2CHandle->pTxBuffer); // Dereference to put data
+					pI2CHandle->pI2Cx->DR = *(pI2CHandle->pTxBuffer); // Dereference to put data
 
 					// b. Decrement TxDataLength
 					pI2CHandle->TxDataLength--;
@@ -1109,6 +1165,7 @@ void I2C_ER_IRQHandling(I2C_Handle_t *pI2CHandle)
 
 }
 
+
 /* ------------------------------------------------------------------------------------------------------
  * Name		:	I2C_getFlagStatus
  * Description	:	To get the Flags info from Status Register
@@ -1128,6 +1185,7 @@ uint8_t I2C_getFlagStatus (I2C_RegDef_t *pI2Cx, uint32_t FlagName)
 
 	return FLAG_RESET;
 }
+
 
 /* ------------------------------------------------------------------------------------------------------
  * Name		:	I2C_PeripheralControl
@@ -1179,6 +1237,8 @@ void I2C_ManageACK(I2C_RegDef_t *pI2Cx, uint8_t EnorDi)
 		// Meh
 	}
 }
+
+
 
 /*------------------------------------ HELPER FUNCTIONS IMPLEMENTATIONS ----------------------------*/
 
@@ -1314,35 +1374,6 @@ uint32_t RCC_Pclk1_Value(void)
 
 
 /* ------------------------------------------------------------------------------------------------------
- * Name		:	I2C_GenerateStartCondition
- * Description	:	To generate START condition
- *
- * Parameter 1	:	Base address of the I2C peripheral
- * Return Type	:	none (void)
- * Note		:	Private helper function
- * 			To generate START condition
- * ------------------------------------------------------------------------------------------------------ */
-static void I2C_GenerateStartCondition(I2C_RegDef_t *pI2Cx)
-{
-	// Step a: In register CR1 (bit 8: START)
-	/*
-	 * SET and CLEARED by the software and CLEARED by hardware when start is senr or PE = 0
-	 *
-	 * In MASTER Mode
-	 * 0: No start generation
-	 * 1: Repeated start generation
-	 *
-	 * In SLAVE Mode
-	 * 0: No start generation
-	 * 1: Start generation when bus is free
-	 *
-	 * */
-	pI2Cx->CR1 |= (1 << I2C_CR1_START);	// (1 << 8)
-
-}
-
-
-/* ------------------------------------------------------------------------------------------------------
  * Name		:	I2C_ExecuteAddressPhase_Write
  * Description	:	To Execute Address Phase
  *
@@ -1394,6 +1425,7 @@ static void I2C_ExecuteAddressPhase_Read(I2C_RegDef_t *pI2Cx, uint8_t SlaveAddre
 	pI2Cx->DR = SlaveAddress;
 
 }
+
 
 /* ------------------------------------------------------------------------------------------------------
  * Name		:	I2C_ClearADDRFlag
@@ -1460,36 +1492,3 @@ static void I2C_ClearADDRFlag(I2C_Handle_t *pI2CHandle)
 
 
 }
-
-
-/* ------------------------------------------------------------------------------------------------------
- * Name		:	I2C_GenerateStopCondition
- * Description	:	To generate STOP condition
- *
- * Parameter 1	:	Base address of the I2C peripheral
- * Return Type	:	none (void)
- * Note		:	Private helper function
- * 			To generate STOP condition
- * ------------------------------------------------------------------------------------------------------ */
-static void I2C_GenerateStopCondition(I2C_RegDef_t *pI2Cx)
-{
-	// Step a: In register CR1 (bit 9: STP)
-	/*
-	 * SET and CLEARED by the software and CLEARED by hardware when STOP condition is detected,
-	 * set by hardware when a timeout error is detected
-	 *
-	 * In MASTER Mode
-	 * 0: No stop generation
-	 * 1: Stop generation AFTER the current byte transfer or after the current start condition is sent
-	 *
-	 * In SLAVE Mode
-	 * 0: No stop generation
-	 * 1: Release the SCL and SDA line after current byte transfer
-	 *
-	 * */
-
-	pI2Cx->CR1 |= (1 << I2C_CR1_STOP);	// (1 << 9)
-
-}
-
-
