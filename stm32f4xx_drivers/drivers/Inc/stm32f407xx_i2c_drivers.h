@@ -120,6 +120,12 @@ uint8_t I2C_MasterReceiveData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, u
 void I2C_Close_SendData(I2C_Handle_t *pI2CHandle);
 void I2C_Close_ReceiveData(I2C_Handle_t *pI2CHandle);
 
+// To generate START and STOP Conditions
+void I2C_GenerateStartCondition(I2C_RegDef_t *pI2Cx);
+void I2C_GenerateStopCondition(I2C_RegDef_t *pI2Cx);
+
+
+
 // IRQ Configuration and ISR Handling
 void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);     	// To configure IRQ number of the I2C
 void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);	// To configure the priority
