@@ -91,6 +91,10 @@ typedef struct
 #define I2C_ERROR_OVR   		6
 #define I2C_ERROR_TIMEOUT 		7
 
+// More Events for Slave Mode
+#define I2C_EVENT_DATA_REQUEST  	8
+#define I2C_EVENT_DATA_RECEIVE  	9
+
 /* -- General MACROS -- */
 // Repeated Start
 #define I2C_REPEATED_START_EN		ENABLE
@@ -115,6 +119,9 @@ void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_
 
 uint8_t I2C_MasterSendData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pTxBuffer, uint32_t LenOfData, uint8_t SlaveAddress, uint8_t repeatedStart);
 uint8_t I2C_MasterReceiveData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, uint32_t LenOfData, uint8_t SlaveAddress, uint8_t repeatedStart);
+
+void I2C_SlaveSendData(I2C_RegDef_t *pI2Cx, uint8_t Data);
+uint8_t I2C_SlaveReceiveData(I2C_RegDef_t *pI2Cx);
 
 // Close Reception and Transmission of Data [In Interrupt Mode]
 void I2C_Close_SendData(I2C_Handle_t *pI2CHandle);
