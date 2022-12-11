@@ -31,11 +31,15 @@
  *
  *	-> Semihosting is enabled for this application
  *		-> To enable Semihosting:
- *		   - Set Linker Flags								: -specs=rdimon.specs -lc -lrdimon
- *		   - In Debug Configuration > Run Cummands (enter)	: monitor arm semihosting enable
- *		   - In Debug Configuration, change debugger 		: to ST_LINK (OpenOCD)
- *		   - In application (xxx.c)							: add prototype -> extern void initialise_monitor_handles(void);
- *															  and before using any printfs -> initialise_monitor_handles();
+ *		   - Set Linker Flags (properties > C/C++ Build > Settings > MCU GCC Linker > Miscs ):
+ * 				-specs=rdimon.specs -lc -lrdimon
+ *		   - In Debug Configuration > Run Cummands (enter):				       
+ *				monitor arm semihosting enable
+ *		   - In Debug Configuration, change debugger: 					       
+ *				To ST_LINK (OpenOCD)
+ *		   - In application (xxx.c):							      
+ *				add prototype -> extern void initialise_monitor_handles(void);
+ *				and before using any printfs -> initialise_monitor_handles();
  *		   - Exclude 'syscalls.c' from build process
  *
  */
@@ -132,7 +136,7 @@ int main()
 		/* -- Procedure -- */
 
 		// 1. Master writes to Slave (request for length of data (1 Byte)) [R/~W = 0]
-		requestCode = 0x51;		// Request length information
+		requestCode = 0x51;						// Request length information
 
 		// Wait until State is READY
 		while (I2C_MasterSendData_IT(&I2C1Handle, &requestCode, 1,SLAVE_ADDRESS,I2C_REPEATED_START_EN) != I2C_READY);
@@ -144,7 +148,7 @@ int main()
 		while (I2C_MasterReceiveData_IT(&I2C1Handle, &lengthRxData, 1,SLAVE_ADDRESS,I2C_REPEATED_START_EN) != I2C_READY);
 
 		// 3. Master writes to Slave (request for data) [R/~W = 0]
-		requestCode = 0x52;		// Request data
+		requestCode = 0x52;						// Request data
 
 		// Wait until State is READY
 		while (I2C_MasterSendData_IT(&I2C1Handle, &requestCode, 1,SLAVE_ADDRESS,I2C_REPEATED_START_EN) != I2C_READY);
@@ -161,7 +165,7 @@ int main()
 		// 5. Print Received Data
 
 		// Wait until I2C_EVENT_RX_COMPLETE (Application Event) to print data
-		while (RxCompleteFlag != 1);	// wait till RxCompleteFlag is not SET to print RxData properly
+		while (RxCompleteFlag != 1);		// wait till RxCompleteFlag is clear to print RxData properly 
 
 		RxData[lengthRxData + 1] = '\0';	// Making last element of array as 0 [because of %s in printf]
 		printf("Received Data from Slave: %s",RxData);
@@ -304,7 +308,7 @@ void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle, uint8_t ApplicationE
 		/* -- In case of Error -- */
 
 		// Close Communication
-		I2C_Close_SendData(&I2C1Handle);	// Close Send Data because Device is Master
+		I2C_Close_SendData(&I2C1Handle);		// Close Send Data because Device is Master
 
 		// Generate STOP Condition (to free the bus)
 		I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
@@ -316,7 +320,7 @@ void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle, uint8_t ApplicationE
 	}
 	else
 	{
-		// Some other Event
+		// Some other Event/Error
 	}
 
 
