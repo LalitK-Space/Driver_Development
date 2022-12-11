@@ -1,5 +1,5 @@
 /*
- * 010_I2C_Tx_Rx_IT.c
+ * 	10_I2C_Tx_Rx_IT.c
  *
  *	-> Interrupt Based Communication
  *
