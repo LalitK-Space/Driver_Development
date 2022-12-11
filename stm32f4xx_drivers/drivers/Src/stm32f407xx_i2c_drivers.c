@@ -616,7 +616,7 @@ uint8_t I2C_MasterReceiveData_IT(I2C_Handle_t *pI2CHandle, uint8_t *pRxBuffer, u
  * Parameter 2 	:	uint8_t DataToMaster
  * Return Type	:	none (void)
  * Note		:	When a request is received from the master, the Slave will send data one byte at a time
- * 				(uint8_t Data)
+ * 			(uint8_t Data)
  * ------------------------------------------------------------------------------------------------------ */
 void I2C_SlaveSendData(I2C_RegDef_t *pI2Cx, uint8_t DataToMaster)
 {
@@ -1032,7 +1032,7 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle)
 
 			// Only when TRA is 1 [SR2]
 			/*
-			 * if TRA = 1 Data Byte Transmitted : Device is in Transmitter Mode
+			 * if TRA = 1 Data Byte Transmitted     : Device is in Transmitter Mode
 			 *    TRA = 0 Data Byte Received	: Device is in Receiver Mode
 			 *
 			 * */
@@ -1120,7 +1120,7 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle)
 
 			// Only when TRA is 0 [SR2]
 			/*
-			 * if TRA = 1 Data Byte Transmitted : Device is in Transmitter Mode
+			 * if TRA = 1 Data Byte Transmitted 	: Device is in Transmitter Mode
 			 *    TRA = 0 Data Byte Received	: Device is in Receiver Mode
 			 *
 			 * */
