@@ -286,6 +286,8 @@ void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle, uint8_t ApplicationE
 	 * I2C_ERROR_AF
 	 * I2C_ERROR_OVR
 	 * I2C_ERROR_TIMEOUT
+	 * I2C_EVENT_DATA_REQUEST
+	 * I2C_EVENT_DATA_RECEIVE
 	 *
 	 * --*/
 
