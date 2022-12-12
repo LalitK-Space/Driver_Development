@@ -106,7 +106,7 @@ typedef struct
 /* -- APIs Supported by SPI driver -- */
 
 // Peripheral Clock Setup
-// Enable/Disable Peripheral Clock for a given SPI base address
+// Enable/Disable Peripheral Clock for a given I2C base address
 void I2C_PeriClockControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);
 
 // Peripheral Initialize and De-initialize APIs
@@ -144,6 +144,8 @@ void I2C_ER_IRQHandling(I2C_Handle_t *pI2CHandle);			// To handle interrupts by 
 uint8_t I2C_getFlagStatus (I2C_RegDef_t *pI2Cx, uint32_t FlagName);     // To get Status Register Flags
 void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);	// To enable or disable the I2C peripheral
 void I2C_ManageACK(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);		// To enable or disable ACKing
+void I2C_Slave_ManageCallbackEvents(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);	// To enable or disable Interrupt Control Bits in Slave Mode
+
 
 // Application Callbacks [To be implemented in the application]
 void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle, uint8_t ApplicationEvent);
