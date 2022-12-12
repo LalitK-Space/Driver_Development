@@ -134,16 +134,16 @@ void I2C_GenerateStopCondition(I2C_RegDef_t *pI2Cx);
 
 
 // IRQ Configuration and ISR Handling
-void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);     	// To configure IRQ number of the I2C
-void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);	// To configure the priority
+void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);     		// To configure IRQ number of the I2C
+void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);		// To configure the priority
 
-void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle);			// TO handle interrupt by I2C EVENTS
-void I2C_ER_IRQHandling(I2C_Handle_t *pI2CHandle);			// To handle interrupts by I2C ERRORS
+void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle);				// TO handle interrupt by I2C EVENTS
+void I2C_ER_IRQHandling(I2C_Handle_t *pI2CHandle);				// To handle interrupts by I2C ERRORS
 
 // Other Helper APIs
-uint8_t I2C_getFlagStatus (I2C_RegDef_t *pI2Cx, uint32_t FlagName);     // To get Status Register Flags
-void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);	// To enable or disable the I2C peripheral
-void I2C_ManageACK(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);		// To enable or disable ACKing
+uint8_t I2C_getFlagStatus (I2C_RegDef_t *pI2Cx, uint32_t FlagName);     	// To get Status Register Flags
+void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);		// To enable or disable the I2C peripheral
+void I2C_ManageACK(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);			// To enable or disable ACKing
 void I2C_Slave_ManageCallbackEvents(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);	// To enable or disable Interrupt Control Bits in Slave Mode
 
 
