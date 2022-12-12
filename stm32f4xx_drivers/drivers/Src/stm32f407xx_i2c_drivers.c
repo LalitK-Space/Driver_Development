@@ -137,6 +137,7 @@ void I2C_Init(I2C_Handle_t *pI2CHandle)
 	// Bit 14	  : SHOULD always be at 1 by software
 	// Bit 15	  : ADDMODE : 0 for 7 bit address (10 bit address not acknowledged)
 
+	tempReg = 0;
 	// Configure device address (own address)
 	tempReg |= (pI2CHandle->I2C_Config.I2C_Device_Address << 1);	// shifted by 1 because bits are [7:1]
 
@@ -1304,6 +1305,52 @@ void I2C_ManageACK(I2C_RegDef_t *pI2Cx, uint8_t EnorDi)
 }
 
 
+/* ------------------------------------------------------------------------------------------------------
+ * Name		:	I2C_Slave_ManageCallbackEvents
+ * Description	:	To Enable or Disable the Callback Events in Slave Mode
+ *
+ * Parameter 1	:	Base address of the I2C peripheral
+ * Parameter 2  :   	Enable or Disable Macro
+ * Return Type	:	none
+ * Note		:	Enables or disables the Interrupt Control Bits (CR2) in Slave Mode
+ *
+ * ------------------------------------------------------------------------------------------------------ */
+void I2C_Slave_ManageCallbackEvents(I2C_RegDef_t *pI2Cx, uint8_t EnorDi)
+{
+	if (EnorDi == ENABLE)
+	{
+		/* -Enable Interrupt Control Bits- */
+
+		// Enable ITEVTEN Bit
+		pI2Cx->CR2 |= (1 << I2C_CR2_ITEVTEN);
+
+		// Enable ITBUFEN Bit
+		pI2Cx->CR2 |= (1 << I2C_CR2_ITBUFEN);
+
+		// Enable ITERREN bit
+		pI2Cx->CR2 |= (1 << I2C_CR2_ITERREN);
+
+	}
+	else if (EnorDi == DISABLE)
+	{
+		/* -Disable Interrupt Control Bits- */
+
+		// Disable ITEVTEN Bit
+		pI2Cx->CR2 &= ~(1 << I2C_CR2_ITEVTEN);
+
+		// Disable ITBUFEN Bit
+		pI2Cx->CR2 &= ~(1 << I2C_CR2_ITBUFEN);
+
+		// Disable ITERREN bit
+		pI2Cx->CR2 &= ~(1 << I2C_CR2_ITERREN);
+	}
+	else
+	{
+		// Meh
+	}
+
+
+}
 
 /*------------------------------------ HELPER FUNCTIONS IMPLEMENTATIONS ----------------------------*/
 
