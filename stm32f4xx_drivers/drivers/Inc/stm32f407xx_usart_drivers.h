@@ -14,12 +14,12 @@
 typedef struct
 {
 
-	uint8_t		USART_Mode;				// Possible values:
+	uint8_t		USART_Mode;			// Possible values:
 	uint32_t	USART_BaudRate;			// Possible values:
 	uint8_t		USART_NoOfStopBits;		// Possible values:
 	uint8_t		USART_WordLength;		// Possible values:
-	uint8_t 	USART_ParityControl;	// Possible values:
-	uint8_t 	USART_HW_FlowControl;	// Possible values:
+	uint8_t 	USART_ParityControl;		// Possible values:
+	uint8_t 	USART_HW_FlowControl;		// Possible values:
 
 
 }USART_Config_t;
@@ -28,7 +28,7 @@ typedef struct
 typedef struct
 {
 	// Holds the base address of the USARTx Peripheral
-		// Initialized with USARTx (USARTx peripheral definitions in stm32f407xx.h and are already type-casted)
+	// Initialized with USART1, USART2, USART3, UART4, UART5, USART6 (USARTx peripheral definitions in stm32f407xx.h and are already type-casted)
 	USART_RegDef_t	*pUSARTx;
 
 	// To hold different USART configuration
