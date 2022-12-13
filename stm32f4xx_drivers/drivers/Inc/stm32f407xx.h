@@ -218,13 +218,13 @@ typedef struct
 // Generic Registers Structure for all USART Peripherals
 typedef struct
 {
-	volatile uint32_t SR;		/* - Status Register							- Offset :0x00 */
+	volatile uint32_t SR;		/* - Status Register									- Offset :0x00 */
 	volatile uint32_t DR;		/* - Data Register		 							- Offset :0x04 */
-	volatile uint32_t BRR;		/* - Baud Rate Register			 					- Offset :0x08 */
+	volatile uint32_t BRR;		/* - Baud Rate Register			 						- Offset :0x08 */
 	volatile uint32_t CR1;		/* - Control Register 1 								- Offset :0x0C */
-	volatile uint32_t CR2;		/* - Control Register 2 									- Offset :0x10 */
+	volatile uint32_t CR2;		/* - Control Register 2 								- Offset :0x10 */
 	volatile uint32_t CR3;		/* - Control Register 3		 							- Offset :0x14 */
-	volatile uint32_t GTPR;		/* - Guard Time and Prescaler Register 									- Offset :0x18 */
+	volatile uint32_t GTPR;		/* - Guard Time and Prescaler Register 							- Offset :0x18 */
 
 }USART_RegDef_t;
 
@@ -376,12 +376,12 @@ typedef struct
 
 
 /* -- USART Peripheral Reset Macros -- */
-#define USART1_REG_RESET()		do {(RCC -> APB2RSTR |= (1 << 4)); 	(RCC -> APB2RSTR &= ~(1 << 4));  } while(0)
+#define USART1_REG_RESET()		do {(RCC -> APB2RSTR |= (1 << 4));  (RCC -> APB2RSTR &= ~(1 << 4));  } while(0)
 #define USART2_REG_RESET()		do {(RCC -> APB1RSTR |= (1 << 17)); (RCC -> APB1RSTR &= ~(1 << 17)); } while(0)
 #define USART3_REG_RESET()		do {(RCC -> APB1RSTR |= (1 << 18)); (RCC -> APB1RSTR &= ~(1 << 18)); } while(0)
 #define UART4_REG_RESET()		do {(RCC -> APB1RSTR |= (1 << 19)); (RCC -> APB1RSTR &= ~(1 << 19)); } while(0)
 #define UART5_REG_RESET()		do {(RCC -> APB1RSTR |= (1 << 20)); (RCC -> APB1RSTR &= ~(1 << 20)); } while(0)
-#define USART6_REG_RESET()		do {(RCC -> APB2RSTR |= (1 << 5)); 	(RCC -> APB2RSTR &= ~(1 << 5));  } while(0)
+#define USART6_REG_RESET()		do {(RCC -> APB2RSTR |= (1 << 5));  (RCC -> APB2RSTR &= ~(1 << 5));  } while(0)
 
 
 /* -- IRQ Numbers Macros-- */
@@ -510,13 +510,13 @@ typedef struct
 /* -- Bit Position Definitions of USART Peripheral -- */
 
 // For USART_SR
-#define USART_SR_PE				0
-#define USART_SR_FE				1
-#define USART_SR_NF				2
+#define USART_SR_PE			0
+#define USART_SR_FE			1
+#define USART_SR_NF			2
 #define USART_SR_ORE			3
 #define USART_SR_IDLE			4
 #define USART_SR_RXNE			5
-#define USART_SR_TC				6
+#define USART_SR_TC			6
 #define USART_SR_TXE			7
 #define USART_SR_LBD			8
 #define USART_SR_CTS			9
@@ -534,7 +534,7 @@ typedef struct
 #define USART_CR1_PS			9
 #define USART_CR1_PCE			10
 #define USART_CR1_WAKE			11
-#define USART_CR1_M				12
+#define USART_CR1_M			12
 #define USART_CR1_UE			13
 #define USART_CR1_OVER8			15
 
@@ -546,7 +546,7 @@ typedef struct
 #define USART_CR2_CPHA			9
 #define USART_CR2_CPOL			10
 #define USART_CR2_CLKEN			11
-#define USART_CR2_STOP			12 // STOP[13:12]
+#define USART_CR2_STOP			12 	// STOP[13:12]
 #define USART_CR2_LINEN			14
 
 // For USART_CR3
