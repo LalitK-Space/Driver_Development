@@ -80,7 +80,7 @@ void USART_SendData(USART_RegDef_t *pUSARTx, uint8_t *pTxBuffer, uint32_t LenOfD
  *
  * Parameter 1	:	Base address of the USART peripheral
  * Parameter 2 	:	Pointer to Rx buffer
- * Parameter 3	:   	Length of the Data to receive
+ * Parameter 3	:   	Length of the Data to send
  * Return Type	:	none (void)
  * Note		:	Blocking API (Polling), function call will wait until all the bytes are received.
  * ------------------------------------------------------------------------------------------------------ */
@@ -112,7 +112,7 @@ uint8_t USART_SendData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint
  *
  * Parameter 1	:	Handle pointer variable
  * Parameter 2 	:	Pointer to Rx buffer
- * Parameter 3	:   	Length of the Data to receive
+ * Parameter 3	:   	Length of the Data to send
  * Return Type	:	uint8_t (State)
  * Note		:
  * ------------------------------------------------------------------------------------------------------ */
@@ -185,31 +185,13 @@ uint8_t USART_getFlagStatus (USART_RegDef_t *pUSARTx, uint32_t FlagName)
 /* ------------------------------------------------------------------------------------------------------
  * Name		:	USART_ClearFlagStatus
  * Description	:	To clear the Flags in Status Register
+ *
  * Parameter 1	:	Base address of the USART peripheral
  * Parameter 2  :   	Flag Name
- * Return Type	:	none (void)
+ * Return Type	:	none
  * Note		:
  * ------------------------------------------------------------------------------------------------------ */
-void USART_ClearFlagStatus (USART_RegDef_t *pUSARTx, uint32_t FlagName)
+void USART_ClearFlagStatus (USART_RegDef_t *pUSARTx, uint32_t FlagName);
 {
 
 }
-
-
-/* ------------------------------------------------------------------------------------------------------
- * Name		:	USART_PeripheralControl
- * Description	:	To Enable or Disable the USART Peripheral
- *
- * Parameter 1	:	Base address of the USART peripheral
- * Parameter 2  :   	Enable or Disable Macro
- * Return Type	:	none
- * Note		:	USART Peripherals are disabled by default
- *
- * ------------------------------------------------------------------------------------------------------ */
-void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
-{
-
-}
-
-
-

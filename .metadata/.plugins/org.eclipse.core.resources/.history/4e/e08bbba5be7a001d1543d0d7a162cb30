@@ -1,0 +1,27 @@
+/*
+ * 									stm32f407xx_usart_drivers.c
+ *
+ *  This file contains USART driver API implementations.
+ *
+ */
+
+#include "stm32f407xx_usart_drivers.h"
+
+
+
+
+
+/* -- > Peripheral Clock Setup  < -- */
+/* ------------------------------------------------------------------------------------------------------
+ * Name		:  	USART_PeriClockControl
+ * Description	:	Peripheral Clock Setup API:
+ 			This function Enables or Disables peripheral clock for the given UART peripheral
+ * Parameter 1	:	Base address of the UART peripheral
+ * Parameter 2	:	ENABLE or DISABLE Macro
+ * Return Type	:	none (void)
+ * Note		:
+ * ------------------------------------------------------------------------------------------------------ */
+void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
+{
+
+}

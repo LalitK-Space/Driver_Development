@@ -112,7 +112,7 @@ uint8_t USART_SendData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint
  *
  * Parameter 1	:	Handle pointer variable
  * Parameter 2 	:	Pointer to Rx buffer
- * Parameter 3	:   	Length of the Data to receive
+ * Parameter 3	:   	Length of the Data to send
  * Return Type	:	uint8_t (State)
  * Note		:
  * ------------------------------------------------------------------------------------------------------ */
@@ -185,6 +185,7 @@ uint8_t USART_getFlagStatus (USART_RegDef_t *pUSARTx, uint32_t FlagName)
 /* ------------------------------------------------------------------------------------------------------
  * Name		:	USART_ClearFlagStatus
  * Description	:	To clear the Flags in Status Register
+ *
  * Parameter 1	:	Base address of the USART peripheral
  * Parameter 2  :   	Flag Name
  * Return Type	:	none (void)

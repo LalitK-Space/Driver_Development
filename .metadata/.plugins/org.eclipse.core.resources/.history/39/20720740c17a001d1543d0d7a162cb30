@@ -185,6 +185,7 @@ uint8_t USART_getFlagStatus (USART_RegDef_t *pUSARTx, uint32_t FlagName)
 /* ------------------------------------------------------------------------------------------------------
  * Name		:	USART_ClearFlagStatus
  * Description	:	To clear the Flags in Status Register
+ *
  * Parameter 1	:	Base address of the USART peripheral
  * Parameter 2  :   	Flag Name
  * Return Type	:	none (void)
