@@ -60,56 +60,29 @@ typedef struct
 #define USART_STD_BAUDRATE_3M		3000000
 
 // USART Number of Stop Bits
-#define USART_STOPBITS_1			0
-#define USART_STOPBITS_0_5			1
-#define USART_STOPBITS_2			2
-#define USART_STOPBITS_1_5			3
+#define USART_STOP_BITS_1			0
+#define USART_STOP_BITS_0_5			1
+#define USART_STOP_BITS_2			2
+#define USART_STOP_BITS_1_5			3
 
 // USART Word Length
-#define USART_WORDLENGTH_8_BITS		0
-#define USART_WORDLENGTH_9_BITS		1
+
 
 // USART Parity Control
-#define USART_PARITY_DISABLE		0
-#define USART_PARITY_EVEN_EN		1
-#define USART_PARITY_ODD_EN			2
+
 
 // USART Hardware Flow Control
-#define USART_HW_FLOW_CONTROL_NONE		0
-#define USART_HW_FLOW_CONTROL_CTS		1
-#define USART_HW_FLOW_CONTROL_RTS		2
-#define USART_HW_FLOW_CONTROL_CTS_RTS	3
+
 
 /* -- USART Status Flags (with Masking details) -- */
-#define USART_FLAG_PE			(1 << USART_SR_PE)
-#define USART_FLAG_FE			(1 << USART_SR_FE)
-#define USART_FLAG_NF			(1 << USART_SR_NF)
-#define USART_FLAG_ORE			(1 << USART_SR_ORE)
-#define USART_FLAG_IDLE			(1 << USART_SR_IDLE)
-#define USART_FLAG_RXNE			(1 << USART_SR_RXNE)
-#define USART_FLAG_TC			(1 << USART_SR_TC)
-#define USART_FLAG_TXE			(1 << USART_SR_TXE)
-#define USART_FLAG_LBD			(1 << USART_SR_LBD)
-#define USART_FLAG_CTS			(1 << USART_SR_CTS)
+
 
 
 /* -- Possible USART Application States (used in Data Tx and Rx APIs in Interrupt Mode) -- */
-#define USART_BUSY_READY	0
-#define USART_BUSY_IN_RX	1
-#define USART_BUSY_IN_TX	2
+
 
 /* -- Possible USART Application Events (Application callback) -- */
-// Event
-#define USART_EVENT_TX_COMPLETE		0
-#define USART_EVENT_RX_COMPLETE		1
-#define USART_EVENT_RX_IDLE			2
-#define USART_EVENT_RX_CTS			3
-#define USART_EVENT_RX_PE			4
 
-// Errors
-#define USART_ERROR_FE				5
-#define USART_ERROR_NE				6
-#define USART_ERROR_ORE				7
 
 /* -- General MACROS -- */
 
@@ -125,17 +98,11 @@ void USART_Init(USART_Handle_t *pUSARTHandle);
 void USART_DeInit(USART_RegDef_t *pUSARTx);
 
 // Data Send and Receive
-void USART_SendData(USART_RegDef_t *pUSARTx, uint8_t *pTxBuffer, uint32_t LenOfData);
-void USART_ReceiveData(USART_RegDef_t *pUSARTx, uint8_t *pRxBuffer, uint32_t LenOfData);
-
-uint8_t USART_SendData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
-uint8_t USART_ReceiveData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
 
 
 // IRQ Configuration and ISR Handling
 void USART_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);     		// To configure IRQ number of the USART
 void USART_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);		// To configure the priority
-void USART_IRQHandling(USART_Handle_t *pUSARTHandle);						// To handle the ISR
 
 // Other Helper APIs
 uint8_t USART_getFlagStatus (USART_RegDef_t *pUSARTx, uint32_t FlagName);     	// To get Status Register Flags

@@ -125,11 +125,11 @@ void USART_Init(USART_Handle_t *pUSARTHandle);
 void USART_DeInit(USART_RegDef_t *pUSARTx);
 
 // Data Send and Receive
-void USART_SendData(USART_RegDef_t *pUSARTx, uint8_t *pTxBuffer, uint32_t LenOfData);
-void USART_ReceiveData(USART_RegDef_t *pUSARTx, uint8_t *pRxBuffer, uint32_t LenOfData);
+void USART_MasterSendData(USART_RegDef_t *pUSARTx, uint8_t *pTxBuffer, uint32_t LenOfData);
+void USART_MasterReceiveData(USART_RegDef_t *pUSARTx, uint8_t *pRxBuffer, uint32_t LenOfData);
 
-uint8_t USART_SendData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
-uint8_t USART_ReceiveData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
+uint8_t I2C_MasterSendData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
+uint8_t I2C_MasterReceiveData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
 
 
 // IRQ Configuration and ISR Handling

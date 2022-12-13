@@ -81,35 +81,14 @@ typedef struct
 #define USART_HW_FLOW_CONTROL_CTS_RTS	3
 
 /* -- USART Status Flags (with Masking details) -- */
-#define USART_FLAG_PE			(1 << USART_SR_PE)
-#define USART_FLAG_FE			(1 << USART_SR_FE)
-#define USART_FLAG_NF			(1 << USART_SR_NF)
-#define USART_FLAG_ORE			(1 << USART_SR_ORE)
-#define USART_FLAG_IDLE			(1 << USART_SR_IDLE)
-#define USART_FLAG_RXNE			(1 << USART_SR_RXNE)
-#define USART_FLAG_TC			(1 << USART_SR_TC)
-#define USART_FLAG_TXE			(1 << USART_SR_TXE)
-#define USART_FLAG_LBD			(1 << USART_SR_LBD)
-#define USART_FLAG_CTS			(1 << USART_SR_CTS)
+#define I2C_FLAG_SB			(1 << I2C_SR1_SB)
 
 
 /* -- Possible USART Application States (used in Data Tx and Rx APIs in Interrupt Mode) -- */
-#define USART_BUSY_READY	0
-#define USART_BUSY_IN_RX	1
-#define USART_BUSY_IN_TX	2
+
 
 /* -- Possible USART Application Events (Application callback) -- */
-// Event
-#define USART_EVENT_TX_COMPLETE		0
-#define USART_EVENT_RX_COMPLETE		1
-#define USART_EVENT_RX_IDLE			2
-#define USART_EVENT_RX_CTS			3
-#define USART_EVENT_RX_PE			4
 
-// Errors
-#define USART_ERROR_FE				5
-#define USART_ERROR_NE				6
-#define USART_ERROR_ORE				7
 
 /* -- General MACROS -- */
 
@@ -125,11 +104,11 @@ void USART_Init(USART_Handle_t *pUSARTHandle);
 void USART_DeInit(USART_RegDef_t *pUSARTx);
 
 // Data Send and Receive
-void USART_SendData(USART_RegDef_t *pUSARTx, uint8_t *pTxBuffer, uint32_t LenOfData);
-void USART_ReceiveData(USART_RegDef_t *pUSARTx, uint8_t *pRxBuffer, uint32_t LenOfData);
+void USART_MasterSendData(USART_RegDef_t *pUSARTx, uint8_t *pTxBuffer, uint32_t LenOfData);
+void USART_MasterReceiveData(USART_RegDef_t *pUSARTx, uint8_t *pRxBuffer, uint32_t LenOfData);
 
-uint8_t USART_SendData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
-uint8_t USART_ReceiveData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
+uint8_t I2C_MasterSendData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
+uint8_t I2C_MasterReceiveData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
 
 
 // IRQ Configuration and ISR Handling
