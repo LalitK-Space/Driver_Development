@@ -28,7 +28,8 @@ typedef struct
 typedef struct
 {
 	// Holds the base address of the USARTx Peripheral
-	// Initialized with USART1, USART2, USART3, UART4, UART5, USART6 (USARTx peripheral definitions in stm32f407xx.h and are already type-casted)
+	// Initialized with USART1, USART2, USART3, UART4, UART5, USART6
+	// (USARTx peripheral definitions in stm32f407xx.h and are already type-casted)
 	USART_RegDef_t	*pUSARTx;
 
 	// To hold different USART configuration
@@ -70,5 +71,28 @@ typedef struct
 /* -- General MACROS -- */
 
 
+/* -- APIs Supported by SPI driver -- */
+
+// Peripheral Clock Setup
+// Enable/Disable Peripheral Clock for a given USART base address
+void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi);
+
+// Peripheral Initialize and De-initialize APIs
+void USART_Init(USART_Handle_t *pUSARTHandle);
+void USART_DeInit(USART_RegDef_t *pUSARTx);
+
+// Data Send and Receive
+
+
+// IRQ Configuration and ISR Handling
+void USART_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);     		// To configure IRQ number of the USART
+void USART_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);		// To configure the priority
+
+// Other Helper APIs
+uint8_t USART_getFlagStatus (USART_RegDef_t *pUSARTx, uint32_t FlagName);     	// To get Status Register Flags
+void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi);		// To enable or disable the USART peripheral
+
+// Application Callbacks [To be implemented in the application]
+void USART_ApplicationEventCallback(USART_Handle_t *pUSARTHandle, uint8_t ApplicationEvent);
 
 #endif /* INC_STM32F407XX_USART_DRIVERS_H_ */
