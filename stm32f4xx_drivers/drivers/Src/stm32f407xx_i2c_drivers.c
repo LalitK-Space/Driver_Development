@@ -1352,6 +1352,25 @@ void I2C_Slave_ManageCallbackEvents(I2C_RegDef_t *pI2Cx, uint8_t EnorDi)
 
 }
 
+
+
+/* ------------------------------------------------------------------------------------------------------
+ * Name		:	I2C_ApplicationEventCallback
+ * Description	:	Callback implementation
+ *
+ * Parameter 1	:	I2C Handle Pointer
+ * Parameter 2	:	Application Event Macro (Possible I2C Application Events)
+ * Return Type	:	none (void)
+ * Note		:	This function will be implemented in the application. If not, to clear warnings or errors
+ * 			weak implementation is done here. If application does not implement this function
+ * 			then this implementation will be called. __attribute__((weak))
+ * ------------------------------------------------------------------------------------------------------ */
+__attribute__((weak))void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle, uint8_t ApplicationEvent)
+{
+	// May or may not be implemented in the application file as per the requirements
+}
+
+
 /*------------------------------------ HELPER FUNCTIONS IMPLEMENTATIONS ----------------------------*/
 
 /* ------------------------------------------------------------------------------------------------------
