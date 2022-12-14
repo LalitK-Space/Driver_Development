@@ -23,6 +23,68 @@
  * ------------------------------------------------------------------------------------------------------ */
 void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
 {
+	if (EnorDi == ENABLE)
+	{
+		if (pUSARTx == USART1)
+		{
+			USART1_PCLK_EN();
+		}
+		else if (pUSARTx == USART2)
+		{
+			USART2_PCLK_EN();
+		}
+		else if (pUSARTx == USART3)
+		{
+			USART3_PCLK_EN();
+		}
+		else if (pUSARTx == UART4)
+		{
+			UART4_PCLK_EN();
+		}
+		else if (pUSARTx == UART5)
+		{
+			UART5_PCLK_EN();
+		}
+		else if (pUSARTx == USART6)
+		{
+			USART6_PCLK_EN();
+		}
+		else
+		{
+			// Meh
+		}
+	}
+	else if (EnorDi == DISABLE)
+		{
+			if (pUSARTx == USART1)
+			{
+				USART1_PCLK_DI();
+			}
+			else if (pUSARTx == USART2)
+			{
+				USART2_PCLK_DI();
+			}
+			else if (pUSARTx == USART3)
+			{
+				USART3_PCLK_DI();
+			}
+			else if (pUSARTx == UART4)
+			{
+				UART4_PCLK_DI();
+			}
+			else if (pUSARTx == UART5)
+			{
+				UART5_PCLK_DI();
+			}
+			else if (pUSARTx == USART6)
+			{
+				USART6_PCLK_DI();
+			}
+			else
+			{
+				// Meh
+			}
+		}
 
 }
 
@@ -52,7 +114,36 @@ void USART_Init(USART_Handle_t *pUSARTHandle)
  * ------------------------------------------------------------------------------------------------------ */
 void USART_DeInit(USART_RegDef_t *pUSARTx)
 {
-
+	// Make respective bit 1 to reset then again make it 0, if kept 1 then Peripheral will always be in reset state
+	// SET and RESET done in MACROS
+		if (pUSARTx == USART1)
+		{
+			USART1_REG_RESET();
+		}
+		else if (pUSARTx == USART2)
+		{
+			USART2_REG_RESET();
+		}
+		else if (pUSARTx == USART3)
+		{
+			USART3_REG_RESET();
+		}
+		else if (pUSARTx == UART4)
+		{
+			UART4_REG_RESET();
+		}
+		else if (pUSARTx == UART5)
+		{
+			UART5_REG_RESET();
+		}
+		else if (pUSARTx == USART6)
+		{
+			USART6_REG_RESET();
+		}
+		else
+		{
+			// Meh
+		}
 }
 
 
@@ -134,6 +225,45 @@ uint8_t USART_ReceiveData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, u
  * ------------------------------------------------------------------------------------------------------ */
 void USART_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 {
+	if (EnorDi == ENABLE)
+	{
+		// Interrupt Set Enable Registers NVIC_ISERx
+		if (IRQNumber <= 31)
+		{
+			// Configure ISER0 Register
+			*NVIC_ISER0 |= (1 << IRQNumber);
+		}
+		else if (IRQNumber > 31 && IRQNumber < 64)
+		{
+			// Configure ISER1 Register
+			*NVIC_ISER1 |= (1 << IRQNumber % 32);  // x % 32 to get to second register set and from its 0th bit
+
+		}
+		else if (IRQNumber >= 64 && IRQNumber < 96)
+		{
+			// COnfigure ISER2 Register : Sufficient, no need to configure more ISERx Registers
+			*NVIC_ISER2 |= (1 << IRQNumber % 64);  // x % 64 to get to third register set and from its 0th bit
+		}
+	}
+	else	// Have to write 1 also to clear, writing 0 in ISER makes no effect
+	{
+		// Interrupt Clear Enable Registers NVIC_ISCRx
+		if (IRQNumber <= 31)
+		{
+			// Configure ICER0 Register
+			*NVIC_ICER0 |= (1 << IRQNumber);
+		}
+		else if (IRQNumber > 31 && IRQNumber < 64)
+		{
+			// Configure ICER1 Register
+			*NVIC_ICER1 |= (1 << IRQNumber % 32);  // x % 32 to get to second register set and from its 0th bit
+		}
+		else if (IRQNumber >= 64 && IRQNumber < 96)
+		{
+			// COnfigure ICER2 Register : Sufficient, no need to configure more ICERx Registers
+			*NVIC_ICER2 |= (1 << IRQNumber % 64);  // x % 64 to get to third register set and from its 0th bit
+		}
+	}
 
 }
 
@@ -149,6 +279,17 @@ void USART_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
  * ------------------------------------------------------------------------------------------------------ */
 void USART_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 {
+	// There are 60 IPR (Interrupt Priority) registers
+	// Each register is of 32 bits and divided into 4 sections to accommodate 4 Priority values
+
+	// Now to get the right section and right bit field
+	uint8_t iprx		 = IRQNumber / 4;
+	uint8_t iprx_section = IRQNumber % 4;
+
+	// NVIC_PRI_BASEADDR + iprx to jump to the required address
+	// shift value is calculated because lower 4 bits of each section are not implemented
+	uint8_t shiftValue	 = (8 * iprx_section) + (8 - PRI_BITS_IMPLEMENTED);
+	*(NVIC_PRI_BASEADDR + iprx) |= (IRQPriority << shiftValue);
 
 }
 
@@ -178,6 +319,13 @@ void USART_IRQHandling(USART_Handle_t *pUSARTHandle)
  * ------------------------------------------------------------------------------------------------------ */
 uint8_t USART_getFlagStatus (USART_RegDef_t *pUSARTx, uint32_t FlagName)
 {
+	if (pUSARTx->SR & FlagName)  // if that Flag is set then execute
+	{
+		return FLAG_SET;
+
+	}
+
+	return FLAG_RESET;
 
 }
 
@@ -192,7 +340,8 @@ uint8_t USART_getFlagStatus (USART_RegDef_t *pUSARTx, uint32_t FlagName)
  * ------------------------------------------------------------------------------------------------------ */
 void USART_ClearFlagStatus (USART_RegDef_t *pUSARTx, uint32_t FlagName)
 {
-
+	// Clear Flag in SR
+	pUSARTx->SR &= ~(FlagName);
 }
 
 
@@ -208,8 +357,35 @@ void USART_ClearFlagStatus (USART_RegDef_t *pUSARTx, uint32_t FlagName)
  * ------------------------------------------------------------------------------------------------------ */
 void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
 {
+	if (EnorDi == ENABLE)
+	{
+		pUSARTx->CR1 |= (1 << USART_CR1_UE);	// UE : USART ENABLE
+	}
+	else if (EnorDi == DISABLE)
+	{
+		pI2Cx->CR1 &= ~(1 << USART_CR1_UE);
+	}
+	else
+	{
+		// Meh
+	}
 
 }
 
 
+/* ------------------------------------------------------------------------------------------------------
+ * Name		:	USART_ApplicationEventCallback
+ * Description	:	Callback implementation
+ *
+ * Parameter 1	:	USART Handle Pointer
+ * Parameter 2	:	Application Event Macro (Possible USART Application Events)
+ * Return Type	:	none (void)
+ * Note		:	This function will be implemented in the application. If not, to clear warnings or errors
+ * 			weak implementation is done here. If application does not implement this function
+ * 			then this implementation will be called. __attribute__((weak))
+ * ------------------------------------------------------------------------------------------------------ */
+__attribute__((weak))void USART_ApplicationEventCallback(USART_Handle_t *pUSARTHandle, uint8_t ApplicationEvent)
+{
+	// May or may not be implemented in the application file as per the requirements
+}
 
