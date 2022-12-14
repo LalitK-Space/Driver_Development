@@ -363,7 +363,7 @@ void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
 	}
 	else if (EnorDi == DISABLE)
 	{
-		pI2Cx->CR1 &= ~(1 << USART_CR1_UE);
+		pUSARTx->CR1 &= ~(1 << USART_CR1_UE);
 	}
 	else
 	{
