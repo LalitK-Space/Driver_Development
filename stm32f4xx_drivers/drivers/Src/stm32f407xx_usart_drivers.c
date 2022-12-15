@@ -287,7 +287,7 @@ void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t L
 			 * Mask bits other than first 9 bits
 			 *
 			 * */
-			pData = (uint16_t *) pTxBuffer;								// 2 bytes for DR
+			pData = (uint16_t *) pTxBuffer;					// 2 bytes for DR
 			pUSARTHandle->pUSARTx->DR = (*pData & (uint16_t)0x01FF);	// Keeping 1st 9 bits
 
 			// Check for Parity Control
