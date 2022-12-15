@@ -40,8 +40,8 @@ typedef struct
 	uint8_t		*pRxBuffer;			// To store appplication's Rx Buffer address
 	uint32_t 	TxDataLength;			// Tx Length
 	uint32_t 	RxDataLength;			// Rx Length
-	uint8_t		TxState;				// Tx State
-	uint8_t		RxState;				// Rx State
+	uint8_t		TxState;			// Tx State
+	uint8_t		RxState;			// Rx State
 
 }USART_Handle_t;
 
@@ -102,7 +102,7 @@ typedef struct
 
 
 /* -- Possible USART Application States (used in Data Tx and Rx APIs in Interrupt Mode) -- */
-#define USART_READY		0
+#define USART_READY			0
 #define USART_BUSY_IN_RX		1
 #define USART_BUSY_IN_TX		2
 
