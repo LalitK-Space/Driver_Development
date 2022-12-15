@@ -45,7 +45,7 @@ typedef struct
 #define USART_MODE_RX_ONLY		1
 #define USART_MODE_TX_RX		2
 
-// USART Baud Rate
+// USART Baud Rate (When fPCLK = 16MHz)
 #define USART_STD_BAUDRATE_1200		1200
 #define USART_STD_BAUDRATE_2400		2400
 #define USART_STD_BAUDRATE_9600		9600
@@ -125,8 +125,8 @@ void USART_Init(USART_Handle_t *pUSARTHandle);
 void USART_DeInit(USART_RegDef_t *pUSARTx);
 
 // Data Send and Receive
-void USART_SendData(USART_RegDef_t *pUSARTx, uint8_t *pTxBuffer, uint32_t LenOfData);
-void USART_ReceiveData(USART_RegDef_t *pUSARTx, uint8_t *pRxBuffer, uint32_t LenOfData);
+void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
+void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t LenOfData);
 
 uint8_t USART_SendData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
 uint8_t USART_ReceiveData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
