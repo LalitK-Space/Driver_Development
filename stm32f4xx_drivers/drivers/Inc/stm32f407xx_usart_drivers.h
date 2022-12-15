@@ -149,6 +149,7 @@ void USART_IRQHandling(USART_Handle_t *pUSARTHandle);				// To handle the ISR
 uint8_t USART_getFlagStatus (USART_RegDef_t *pUSARTx, uint32_t FlagName);     	// To get Status Register Flags
 void USART_ClearFlagStatus (USART_RegDef_t *pUSARTx, uint32_t FlagName);     	// To Clear Status Register Flags
 void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi);		// To enable or disable the USART peripheral
+void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t Baudrate);		// To Set Desired Baud Rate
 
 // Application Callbacks [To be implemented in the application]
 void USART_ApplicationEventCallback(USART_Handle_t *pUSARTHandle, uint8_t ApplicationEvent);
