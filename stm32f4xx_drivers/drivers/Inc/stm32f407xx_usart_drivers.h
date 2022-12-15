@@ -35,6 +35,14 @@ typedef struct
 	// To hold different USART configuration
 	USART_Config_t	USART_Config;
 
+	// Required for USART Data Tx & Rx APIs in Interrupt Mode
+	uint8_t		*pTxBuffer;			// To store appplication's Tx Buffer address
+	uint8_t		*pRxBuffer;			// To store appplication's Rx Buffer address
+	uint32_t 	TxDataLength;			// Tx Length
+	uint32_t 	RxDataLength;			// Rx Length
+	uint8_t		TxState;				// Tx State
+	uint8_t		RxState;				// Rx State
+
 }USART_Handle_t;
 
 
@@ -94,7 +102,7 @@ typedef struct
 
 
 /* -- Possible USART Application States (used in Data Tx and Rx APIs in Interrupt Mode) -- */
-#define USART_BUSY_READY		0
+#define USART_READY		0
 #define USART_BUSY_IN_RX		1
 #define USART_BUSY_IN_TX		2
 
@@ -129,7 +137,7 @@ void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t L
 void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t LenOfData);
 
 uint8_t USART_SendData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
-uint8_t USART_ReceiveData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData);
+uint8_t USART_ReceiveData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t LenOfData);
 
 
 // IRQ Configuration and ISR Handling
