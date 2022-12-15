@@ -100,6 +100,115 @@ void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
  * ------------------------------------------------------------------------------------------------------ */
 void USART_Init(USART_Handle_t *pUSARTHandle)
 {
+	/* - Enable Peripheral Clock - */
+	USART_PeriClockControl(pUSARTHandle->pUSARTx, ENABLE);
+
+	uint32_t tempReg = 0;
+
+	/* - Configuring CR1 - */
+
+	// a. Enabling USART Tx and Rx Blocks according to USART_MODE configuration
+	if (pUSARTHandle->USART_Config.USART_Mode == USART_MODE_RX_ONLY)
+	{
+		// Enable Rx Block (CR1: Bit[2] RE)
+		tempReg |= (1 << USART_CR1_RE);
+	}
+	else if (pUSARTHandle->USART_Config.USART_Mode == USART_MODE_TX_ONLY)
+	{
+		// Enable Rx Block (CR1: Bit[3] TE)
+		tempReg |= (1 << USART_CR1_TE);
+	}
+	else if (pUSARTHandle->USART_Config.USART_Mode == USART_MODE_TX_RX)
+	{
+		// Enable both Tx and Rx Block (CR1: Bit[2] RE and Bit[3] TE)
+		tempReg |= (1 << USART_CR1_RE);
+		tempReg |= (1 << USART_CR1_TE);
+	}
+	else
+	{
+		// Invalid USART MODE
+	}
+
+	// b. Configuring the Word Length (CR1: Bit[12] M)
+	tempReg |= pUSARTHandle->USART_Config.USART_WordLength << USART_CR1_M;
+
+	// c. Configuring Parity Control
+	if (pUSARTHandle->USART_Config.USART_ParityControl == USART_PARITY_EVEN_EN)
+	{
+		// Enable Parity Control (CR1: Bit[10] PCE)
+		tempReg |= (1 << USART_CR1_PCE);
+
+		// Enable Even Parity (CR1: Bit[9] PS)
+		// when PCE is Enabled, by default EVEN parity is selected (PS = 0 for EVEN PARITY)
+	}
+	else if (pUSARTHandle->USART_Config.USART_ParityControl == USART_PARITY_ODD_EN)
+	{
+		// Enable Parity Control (CR1: Bit[10] PCE)
+		tempReg |= (1 << USART_CR1_PCE);
+
+		//Enable Odd Parity (CR1: Bit[9] PS)
+		tempReg |= (1 << USART_CR1_PS);
+	}
+	else if (pUSARTHandle->USART_Config.USART_ParityControl == USART_PARITY_DISABLE)
+	{
+		// Disabled by default
+	}
+	else
+	{
+		// Invalid Parity Configuration
+	}
+
+	// d. Configure CR1 with tempReg bit values
+	pUSARTHandle->pUSARTx->CR1 = tempReg;
+
+	/* - Configuring CR2 - */
+
+	// Reset tempReg Variable
+	tempReg = 0;
+
+	// a. Configure Number of Stop Bits (CR2: Bits[13:12] STOP)
+	tempReg |= pUSARTHandle->USART_Config.USART_NoOfStopBits << USART_CR2_STOP;
+
+	// b. Configure CR2 with tempReg bit values
+	pUSARTHandle->pUSARTx->CR2 = tempReg;
+
+	/* - Configuring CR3 - */
+
+	// Reset tempReg Variable
+	tempReg = 0;
+
+	// a. Configuring Hardware Flow Control
+	if (pUSARTHandle->USART_Config.USART_HW_FlowControl == USART_HW_FLOW_CONTROL_CTS)
+	{
+		// Enable CTS (CR3: Bit[9] CTSE)
+		tempReg |= (1 << USART_CR3_CTSE);
+	}
+	else if (pUSARTHandle->USART_Config.USART_HW_FlowControl == USART_HW_FLOW_CONTROL_RTS)
+	{
+		// Enable RTS (CR3: Bit[8] RTSE)
+		tempReg |= (1 << USART_CR3_RTSE);
+	}
+	else if (pUSARTHandle->USART_Config.USART_HW_FlowControl == USART_HW_FLOW_CONTROL_CTS_RTS)
+	{
+		// Enable both CTS ans RTS (CR3: Bit[9] CTSE and Bit[8] RTSE)
+		tempReg |= (1 << USART_CR3_CTSE);
+		tempReg |= (1 << USART_CR3_RTSE);
+	}
+	else if (pUSARTHandle->USART_Config.USART_HW_FlowControl == USART_HW_FLOW_CONTROL_NONE)
+	{
+		// Disabled by default
+	}
+	else
+	{
+		// Invalid Hardware Flow Control Configurations
+	}
+
+	// b. Configure CR3 with tempReg bit Values
+	pUSARTHandle->pUSARTx->CR3 = tempReg;
+
+
+	/* - Configuring BRR - */
+
 
 }
 
@@ -153,14 +262,67 @@ void USART_DeInit(USART_RegDef_t *pUSARTx)
  * Name		:	USART_SendData
  * Description	:	USART Peripheral Send Data API:
  *
- * Parameter 1	:	Base address of the USART peripheral
+ * Parameter 1	:	Handle pointer variable
  * Parameter 2 	:	Pointer to data
  * Parameter 3	:   	Length of the Data to send
  * Return Type	:	none (void)
  * Note		:	Blocking API (Polling), function call will wait until all the bytes are transmitted.
  * ------------------------------------------------------------------------------------------------------ */
-void USART_SendData(USART_RegDef_t *pUSARTx, uint8_t *pTxBuffer, uint32_t LenOfData)
+void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData)
 {
+	uint16_t *pData;
+
+	/* - Step 1: Send the data until 'LenOfData' bytes are transferred - */
+	for (uint32_t i = 0; i < LenOfData; i++ )
+	{
+		// a. Wait until TxE Flag is SET
+		while (!USART_getFlagStatus(pUSARTHandle->pUSARTx, USART_FLAG_TXE));
+
+		// b. Check for Word Length
+		if (pUSARTHandle->USART_Config.USART_WordLength == USART_WORDLENGTH_9_BITS)
+		{
+			// 9 Bit Word Length is selected
+			/*
+			 * Load Data Register with 2 Bytes
+			 * Mask bits other than first 9 bits
+			 *
+			 * */
+			pData = (uint16_t *) pTxBuffer;								// 2 bytes for DR
+			pUSARTHandle->pUSARTx->DR = (*pData & (uint16_t)0x01FF);	// Keeping 1st 9 bits
+
+			// Check for Parity Control
+			if (pUSARTHandle->USART_Config.USART_ParityControl == USART_PARITY_DISABLE)
+			{
+				// Parity is Disable, User Data of 9 bits will be transferred
+				// Increment pTxBuffer (2 times) to transmit user data (because 9 bits)
+				pTxBuffer++;
+				pTxBuffer++;
+			}
+			else
+			{
+				// Parity Bit is used in Application, User Data of 8 Bits will be transferred
+				// 9th Bit (Parity Bit) will be replaced by the Hardware
+				// So, Increment pTxBuffer (1 time) to point to next data address
+				pTxBuffer++;
+			}
+		}
+		else
+		{
+			// 8 Bit Word Length is selected
+			// Load Data Register with 8 bits of data
+			pUSARTHandle->pUSARTx->DR = (*pTxBuffer & (uint8_t)0xFF);		// Dereference to send
+
+			// Increment pTxBuffer (1 time)
+			pTxBuffer++;
+
+		}
+
+	}
+
+	/* - Step 2: Wait until TC Flag is SET (Transfer Complete) - */
+	while (!USART_getFlagStatus(pUSARTHandle->pUSARTx, USART_FLAG_TC));
+
+	// Additional setting can be done here [after TC is SET](Ex: Disable Tx Block to save power, etc)
 
 }
 
@@ -169,14 +331,73 @@ void USART_SendData(USART_RegDef_t *pUSARTx, uint8_t *pTxBuffer, uint32_t LenOfD
  * Name		:	USART_ReceiveData
  * Description	:	USART Peripheral Receive Data API:
  *
- * Parameter 1	:	Base address of the USART peripheral
+ * Parameter 1	:	Handle pointer variable
  * Parameter 2 	:	Pointer to Rx buffer
  * Parameter 3	:   	Length of the Data to receive
  * Return Type	:	none (void)
  * Note		:	Blocking API (Polling), function call will wait until all the bytes are received.
  * ------------------------------------------------------------------------------------------------------ */
-void USART_ReceiveData(USART_RegDef_t *pUSARTx, uint8_t *pRxBuffer, uint32_t LenOfData)
+void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t LenOfData)
 {
+	/* - Step 1: Receive/read the data until 'LenOfData' bytes are received - */
+	for (uint32_t i = 0; i < LenOfData; i++)
+	{
+		// a. Wait until RxNE Flag is SET
+		while (!USART_getFlagStatus(pUSARTHandle->pUSARTx, USART_FLAG_RXNE));
+
+		// b. Check for Word Length (Receiving 9 bits or 8 bits)
+		if (pUSARTHandle->USART_Config.USART_WordLength == USART_WORDLENGTH_9_BITS)
+		{
+			// Receiving: 9 Bits of Data
+
+			// Check for Parity Control
+			if (pUSARTHandle->USART_Config.USART_ParityControl == USART_PARITY_DISABLE)
+			{
+				// Parity is Disable, User Data of 9 bits will be Received
+				// Read first 2 bytes and mask out others
+				*((uint16_t *)pRxBuffer) = (pUSARTHandle->pUSARTx->DR & (uint16_t)0x1FF);
+
+
+				// Increment pRxBuffer (2 times) to transmit user data
+				pRxBuffer++;
+				pRxBuffer++;
+			}
+			else
+			{
+				// Parity Bit is used in Application, User Data of 8 Bits will be received + 1 parity bit
+				// Read 8 bits of data
+				*pRxBuffer = (pUSARTHandle->pUSARTx->DR & (uint8_t)0xFF);
+
+				// So, Increment pRxBuffer (1 time)
+				pRxBuffer++;
+			}
+		}
+		else
+		{
+			// Receiving 8 Bits of Data
+
+			// Check for Parity Control
+			if (pUSARTHandle->USART_Config.USART_ParityControl == USART_PARITY_DISABLE)
+			{
+				// Parity is Disable, User Data of 8 bits will be Received
+				// Read 8 bits of data
+				*pRxBuffer = (pUSARTHandle->pUSARTx->DR & (uint8_t)0xFF);
+
+			}
+			else
+			{
+				// Parity Bit is used in Application, User Data of 7 Bits will be received + 1 parity bit
+				// Read 7 bits of data
+				*pRxBuffer = (pUSARTHandle->pUSARTx->DR & (uint8_t)0x7F);
+
+			}
+
+			// Increment pRxBuffer (1 time)
+			pRxBuffer++;
+
+		}
+
+	}
 
 }
 
@@ -193,6 +414,27 @@ void USART_ReceiveData(USART_RegDef_t *pUSARTx, uint8_t *pRxBuffer, uint32_t Len
  * ------------------------------------------------------------------------------------------------------ */
 uint8_t USART_SendData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData)
 {
+	// Get state of USART peripheral
+	uint8_t state = pUSARTHandle->TxState;
+
+	// Only when Peripheral is NOT busy
+	if (state != USART_BUSY_IN_TX)
+	{
+		// a. Save the Tx buffer address and length information in a global variable
+		pUSARTHandle->pTxBuffer = pTxBuffer;		// Saving Tx Buffer Address
+		pUSARTHandle->TxDataLength = LenOfData;		// Saving Length Information
+
+		// b. Mark the USART state as busy in transmission
+		pUSARTHandle->TxState = USART_BUSY_IN_TX; 	// State
+
+		// c. Enable interrupt for TxE (CR1)
+		pUSARTHandle->pUSARTx->CR1 |= (1 << USART_CR1_TXEIE);
+
+		// d. Enable interrupt for TC (CR1)
+		pUSARTHandle->pUSARTx->CR1 |= (1 << USART_CR1_TCIE);
+	}
+
+	return state;
 
 }
 
@@ -207,9 +449,26 @@ uint8_t USART_SendData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint
  * Return Type	:	uint8_t (State)
  * Note		:
  * ------------------------------------------------------------------------------------------------------ */
-uint8_t USART_ReceiveData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t LenOfData)
+uint8_t USART_ReceiveData_IT(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t LenOfData)
 {
+	// Get state of USART peripheral
+	uint8_t state = pUSARTHandle->RxState;
 
+	// Only when Peripheral is NOT busy
+	if (state != USART_BUSY_IN_RX)
+	{
+		// a. Save the Tx buffer address and length information in a global variable
+		pUSARTHandle->pRxBuffer = pRxBuffer;		// Saving Rx Buffer Address
+		pUSARTHandle->RxDataLength = LenOfData;		// Saving Length Information
+
+		// b. Mark the USART state as busy in reception
+		pUSARTHandle->RxState = USART_BUSY_IN_RX; 	// State
+
+		// c. Enable interrupt for RxNE (CR1)
+		pUSARTHandle->pUSARTx->CR1 |= (1 << USART_CR1_RXNEIE);
+	}
+
+	return state;
 }
 
 
