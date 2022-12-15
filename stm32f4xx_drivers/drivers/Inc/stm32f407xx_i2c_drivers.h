@@ -33,7 +33,7 @@ typedef struct
 
 	// Required for I2C Data Tx & Rx APIs in Interrupt Mode
 	uint8_t		*pTxBuffer;			// To store appplication's Tx Buffer address
-	uint8_t		*pRxBuffer;			// To store appplication's Tx Buffer address
+	uint8_t		*pRxBuffer;			// To store appplication's Rx Buffer address
 	uint32_t 	TxDataLength;			// Tx Length
 	uint32_t 	RxDataLength;			// Rx Length
 	uint8_t		TxRxState;			// Communication States (I2C is Half Duplex so 1 variable to represent state)
