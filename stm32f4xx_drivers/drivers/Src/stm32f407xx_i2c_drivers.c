@@ -10,7 +10,7 @@
 
 /* -- Helper Functions prototypes  -- */
 
-// To get the value if Pclk1 (defined in stm32f407xx_rcc_driver.c)
+// To get the value of Pclk1 (defined in stm32f407xx_rcc_driver.c)
 uint32_t RCC_Pclk1_Value(void);
 
 // To Execute Address Phase : for Writing (Master Tx -> Slave Rx)
