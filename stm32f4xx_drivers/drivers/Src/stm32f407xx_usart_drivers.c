@@ -641,7 +641,7 @@ void USART_IRQHandling(USART_Handle_t *pUSARTHandle)
 					 * Mask bits other than first 9 bits
 					 *
 					 * */
-					pData = (uint16_t *) pUSARTHandle->pTxBuffer;					// 2 bytes for DR
+					pData = (uint16_t *) pUSARTHandle->pTxBuffer;			// 2 bytes for DR
 					pUSARTHandle->pUSARTx->DR = (*pData & (uint16_t)0x01FF);	// Keeping 1st 9 bits
 
 					// Check for Parity Control
@@ -1004,18 +1004,18 @@ void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
  * Parameter 2  :   	Desired Baud Rate
  * Return Type	:	none
  * Note		: 	Baud Rate can be:
- * 					1200
-					2400
-					9600
-					19200
-					38400
-					57600
-					115200
-					230400
-					460800
-					921600
-					2000000
-					3000000
+ * 			1200
+			2400
+			9600
+			19200
+			38400
+			57600
+			115200
+			230400
+			460800
+			921600
+			2000000
+			3000000
  *
  * ------------------------------------------------------------------------------------------------------ */
 void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t Baudrate)
@@ -1035,7 +1035,7 @@ void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t Baudrate)
 	/*	- Calculations -
 	 *
 	 * 	BaudRate =  f(peripheralCLK) / (8 * USARTDIV)		if OVER8 = 1
-     *
+     	 *
 	 *	BaudRate = f(peripheralCLK) / (16 * USARTDIV)		if OVER8 = 0
 	 *
 	 * */
@@ -1059,7 +1059,7 @@ void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t Baudrate)
 		// OVER8 Bit is SET [Oversampling by 8]
 		/*
 		 *  Equation is multiplied by 100, to get a Whole Number (No need to deal with fractions)
-		 * 	BaudRate =  [f(peripheralCLK) / (8 * USARTDIV)] x 100
+		 *  BaudRate =  [f(peripheralCLK) / (8 * USARTDIV)] x 100
 		 *           =  [(25 * f(peripheralCLK)) / (2 * USARTDIV)]
 		 * */
 
@@ -1070,7 +1070,7 @@ void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t Baudrate)
 		// OVER8 Bit is Cleared [Oversampling by 16]
 		/*
 		 *  Equation is multiplied by 100, to get a Whole Number (No need to deal with fractions)
-		 * 	BaudRate =  [f(peripheralCLK) / (16 * USARTDIV)] x 100
+		 *  BaudRate =  [f(peripheralCLK) / (16 * USARTDIV)] x 100
 		 *           =  [(25 * f(peripheralCLK)) / (4 * USARTDIV)]
 		 * */
 
@@ -1080,7 +1080,7 @@ void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t Baudrate)
 	/* - Step 3: Calculate Mantissa and Fraction values from 'usartDIV' - */
 
 	// Mantissa value
-	mantissaValue = usartDIV / 100;		// Only need integer part (will be mantissa)
+	mantissaValue = usartDIV / 100;					// Only need integer part (will be mantissa)
 
 	// Store Mantissa value in proper bit fields in tempReg variable. USART_BRR DIV_Mantissa[15:4] 12 bits
 	tempReg |= (mantissaValue << 4);
