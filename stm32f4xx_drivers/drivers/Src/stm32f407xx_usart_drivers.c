@@ -7,6 +7,14 @@
 
 #include "stm32f407xx_usart_drivers.h"
 
+
+// To get the value of Pclk1 [APB1] (defined in stm32f407xx_rcc_driver.c)
+uint32_t RCC_Pclk1_Value(void);
+
+// To get the value of Pclk2 [APB2] (defined in stm32f407xx_rcc_driver.c)
+uint32_t RCC_Pclk2_Value(void);
+
+
 /* -- > Peripheral Clock Setup  < -- */
 /* ------------------------------------------------------------------------------------------------------
  * Name		:  	USART_PeriClockControl
@@ -652,7 +660,105 @@ void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
  * ------------------------------------------------------------------------------------------------------ */
 void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t Baudrate)
 {
+	// To hold APB Clock Frequency
+	uint32_t Peri_Clkx;
 
+	// USARTDIV value [Divide factor to generate different baud rates (minimum value = 1)]
+	uint32_t usartDIV;
+
+	// To hold Mantissa and Fraction values
+	uint32_t mantissaValue;		// 12 Bits value
+	uint32_t fractionValue;		// 4 Bits value
+
+	uint32_t tempReg = 0;
+
+	/*	- Calculations -
+	 *
+	 * 	BaudRate =  f(peripheralCLK) / (8 * USARTDIV)		if OVER8 = 1
+     *
+	 *	BaudRate = f(peripheralCLK) / (16 * USARTDIV)		if OVER8 = 0
+	 *
+	 * */
+
+	/* - Step 1: Get Peripheral Clock Frequency - */
+	if ((pUSARTx == USART1) || (pUSARTx ==  USART6))
+	{
+		// USART1 and USART6 are connected to APB2 Bus
+		Peri_Clkx = RCC_Pclk2_Value();
+	}
+	else
+	{
+		// USART2, USART3, UART4, UART5 are connected to APB1
+		Peri_Clkx = RCC_Pclk1_Value();
+	}
+
+	/* - Step 2: Check for OVER8 configuration - */
+
+	if (pUSARTx->CR1 & (1 << USART_CR1_OVER8))
+	{
+		// OVER8 Bit is SET [Oversampling by 8]
+		/*
+		 *  Equation is multiplied by 100, to get a Whole Number (No need to deal with fractions)
+		 * 	BaudRate =  [f(peripheralCLK) / (8 * USARTDIV)] x 100
+		 *           =  [(25 * f(peripheralCLK)) / (2 * USARTDIV)]
+		 * */
+
+		usartDIV = ((25 * Peri_Clkx) / (2 * Baudrate));
+	}
+	else
+	{
+		// OVER8 Bit is Cleared [Oversampling by 16]
+		/*
+		 *  Equation is multiplied by 100, to get a Whole Number (No need to deal with fractions)
+		 * 	BaudRate =  [f(peripheralCLK) / (16 * USARTDIV)] x 100
+		 *           =  [(25 * f(peripheralCLK)) / (4 * USARTDIV)]
+		 * */
+
+		usartDIV = ((25 * Peri_Clkx) / (4 * Baudrate));
+	}
+
+	/* - Step 3: Calculate Mantissa and Fraction values from 'usartDIV' - */
+
+	// Mantissa value
+	mantissaValue = usartDIV / 100;		// Only need integer part (will be mantissa)
+
+	// Store Mantissa value in proper bit fields in tempReg variable. USART_BRR DIV_Mantissa[15:4] 12 bits
+	tempReg |= (mantissaValue << 4);
+
+	// Fraction value
+	fractionValue = (usartDIV - (mantissaValue * 100));		// Extracting fraction digits
+
+	// Calculation: Fraction value
+	if (pUSARTx->CR1 & (1 << USART_CR1_OVER8))
+	{
+		// OVER8 Bit is SET [Oversampling by 8]
+
+		/*
+		 * Multiply extracted Fraction value by 8
+		 * +50 is roundoff factor (round off to nearest whole number)
+		 * then, divide by 100 to get fraction value (rounded off to nearest whole number)
+		 *
+		 * */
+		fractionValue = (((fractionValue * 8) + 50) / 100) & ((uint8_t) 0x07);
+	}
+	else
+	{
+		// OVER8 Bit is Cleared [Oversampling by 16]
+
+		/*
+		 * Multiply extracted Fraction value by 16
+		 * +50 is roundoff factor (round off to nearest whole number)
+		 * then, divide by 100 to get fraction value (rounded off to nearest whole number)
+		 *
+		 * */
+		fractionValue = (((fractionValue * 16) + 50) / 100) & ((uint8_t) 0x0F);
+	}
+
+	// Store Fraction value in proper bit fields in tempReg variable. USART_BRR DIV_Fraction[3:0] 4 bits
+	tempReg |= fractionValue;
+
+	/* - Step 4: Configure the USART_BRR with Mantissa value and Fraction values (tempReg) - */
+	pUSARTx->BRR = tempReg;
 
 }
 
