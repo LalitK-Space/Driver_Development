@@ -410,6 +410,12 @@ typedef struct
 #define IRQ_NO_I2C3_ER			80
 
 // For USART
+#define IRQ_NO_USART1	    37
+#define IRQ_NO_USART2	    38
+#define IRQ_NO_USART3	    39
+#define IRQ_NO_UART4	    52
+#define IRQ_NO_UART5	    53
+#define IRQ_NO_USART6	    71
 
 /* -- Bit Position Definitions of SPI Peripheral -- */
 
