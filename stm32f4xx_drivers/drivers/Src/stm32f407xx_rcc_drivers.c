@@ -23,17 +23,17 @@ uint8_t apb2_prescaler[4] = {2,4,8,16};
  * Return Type	:	(uint32_t) clock frequency
  * Note		:	For STM32F407G-DISC1 board,
  *			(From Clock Tree)
- *				 [HSE or HSI(used) or PLLCLK or PLLR]
- *				 -> [AHB_PRESC] -> [APB1_PRESC] -> [APB1 peripheral clock]
+ *			[HSE or HSI(used) or PLLCLK or PLLR]
+ *			 -> [AHB_PRESC] -> [APB1_PRESC] -> [APB1 peripheral clock]
  *
  *			Steps:
- *				1. Find source [HSE or HSI(used) or PLLCLK or PLLR]  (from RCC)
- *				2. Calculate AHB Prescaler
- *				3. Calculate APB1 Prescaler
- *				4. Then, derive clock frequency for APB1 peripheral
+ *			1. Find source [HSE or HSI(used) or PLLCLK or PLLR]  (from RCC)
+ *			2. Calculate AHB Prescaler
+ *			3. Calculate APB1 Prescaler
+ *			4. Then, derive clock frequency for APB1 peripheral
  *
- *				USART2, USART3, UART4, UART5 are connected to APB1 Bus
- *				I2Cx is connected to APB1 Bus
+ *			USART2, USART3, UART4, UART5 are connected to APB1 Bus
+ *			I2Cx is connected to APB1 Bus
  * ------------------------------------------------------------------------------------------------------ */
 uint32_t RCC_Pclk1_Value(void)
 {
@@ -157,16 +157,16 @@ uint32_t RCC_Pclk1_Value(void)
  * Return Type	:	(uint32_t) clock frequency
  * Note		:	For STM32F407G-DISC1 board,
  *			(From Clock Tree)
- *				 [HSE or HSI(used) or PLLCLK or PLLR]
- *				 -> [AHB_PRESC] -> [APB2_PRESC] -> [APB2 peripheral clock]
+ *			[HSE or HSI(used) or PLLCLK or PLLR]
+ *			-> [AHB_PRESC] -> [APB2_PRESC] -> [APB2 peripheral clock]
  *
  *			Steps:
- *				1. Find source [HSE or HSI(used) or PLLCLK or PLLR]  (from RCC)
- *				2. Calculate AHB Prescaler
- *				3. Calculate APB2 Prescaler
- *				4. Then, derive clock frequency for APB2 peripheral
+ *			1. Find source [HSE or HSI(used) or PLLCLK or PLLR]  (from RCC)
+ *			2. Calculate AHB Prescaler
+ *			3. Calculate APB2 Prescaler
+ *			4. Then, derive clock frequency for APB2 peripheral
  *
- *				USART1, USART6 are connected to APB2 Bus
+ *			USART1, USART6 are connected to APB2 Bus
  *
  * ------------------------------------------------------------------------------------------------------ */
 uint32_t RCC_Pclk2_Value(void)
