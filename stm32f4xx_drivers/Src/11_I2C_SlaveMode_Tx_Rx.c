@@ -54,7 +54,7 @@ uint8_t byteTx = 0;
 I2C_Handle_t I2C1Handle;
 
 // Tx Buffer
-uint8_t TxData[32] = "lalitk.Space Yoo";
+uint8_t TxData[32] = " -> lalitk.Space";
 
 // To configure GPIO pins to behave as I2C peripheral
 void I2C1_GPIO_Init(void);
