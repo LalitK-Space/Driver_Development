@@ -116,7 +116,7 @@ typedef struct
 
 // Errors
 #define USART_ERROR_FE			5
-#define USART_ERROR_NE			6
+#define USART_ERROR_NF			6
 #define USART_ERROR_ORE			7
 
 /* -- General MACROS -- */
