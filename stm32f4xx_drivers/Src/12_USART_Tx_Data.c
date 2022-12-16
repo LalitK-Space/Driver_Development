@@ -4,11 +4,11 @@
  *  -> USART SEND DATA (Polling based) <-
  *
  *	-> Configuration:
- *		- baud Rate		:115200
+ *		- baud Rate	:115200
  *		- Frame Format	:1 Stop Bit, 8 Bits Data, No Parity
  *
- *	USART Peripheral Used			:	USART2
- *  Pins			   	:	PA(2) -> USART2_Tx
+ *	USART Peripheral Used		:	USART2
+ *  	Pins			   	:	PA(2) -> USART2_Tx
  *  						PA(3) -> USART2_Rx
 
  *
@@ -81,7 +81,7 @@ void USART2_GPIO_Init(void)
 	GPIO_Handle_t USARTpins;
 
 	/* -- Port Selection -- */
-	USARTpins.pGPIOx 					= GPIOA;		// PORT A
+	USARTpins.pGPIOx 				= GPIOA;		// PORT A
 
 	// Peripheral Configurations
 	USARTpins.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_ALTFUNC;	// Mode as Alternate Functionality
@@ -109,12 +109,12 @@ void USART2_Init(void)
 	USART2Handle.pUSARTx	= USART2;
 
 	/* -- Peripheral Configuration -- */
-	USART2Handle.USART_Config.USART_BaudRate = USART_STD_BAUDRATE_115200;	// Baud Rate = 115200
-	USART2Handle.USART_Config.USART_HW_FlowControl = USART_HW_FLOW_CONTROL_NONE; // No HW Flow Control
-	USART2Handle.USART_Config.USART_Mode = USART_MODE_TX_ONLY;		// Mode: ONLY_TX (Only sending)
-	USART2Handle.USART_Config.USART_NoOfStopBits = USART_STOPBITS_1;	// No. of Stop Bits = 1
-	USART2Handle.USART_Config.USART_WordLength = USART_WORDLENGTH_8_BITS;	// Word Length of 8 Bits
-	USART2Handle.USART_Config.USART_ParityControl = USART_PARITY_DISABLE;	// Parity is disabled
+	USART2Handle.USART_Config.USART_BaudRate = USART_STD_BAUDRATE_115200;		// Baud Rate = 115200
+	USART2Handle.USART_Config.USART_HW_FlowControl = USART_HW_FLOW_CONTROL_NONE; 	// No HW Flow Control
+	USART2Handle.USART_Config.USART_Mode = USART_MODE_TX_ONLY;			// Mode: ONLY_TX (Only sending)
+	USART2Handle.USART_Config.USART_NoOfStopBits = USART_STOPBITS_1;		// No. of Stop Bits = 1
+	USART2Handle.USART_Config.USART_WordLength = USART_WORDLENGTH_8_BITS;		// Word Length of 8 Bits
+	USART2Handle.USART_Config.USART_ParityControl = USART_PARITY_DISABLE;		// Parity is disabled
 
 	/* -- Initialize the USART Peripheral -- */
 	USART_Init(&USART2Handle);
@@ -140,7 +140,7 @@ void GPIO_buttonInit(void)
 		gpio_button.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_SPEED_VERY_HIGH;
 
 		// Pin Configuration: PU-PD Configuration (Selected ->NO PU PD, As PIN is already PULLED-DOWN -> Schematics)
-		gpio_button.GPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_NO_PUPD;
+		gpio_button.GPIO_PinConfig.GPIO_PinPuPdControl 		= GPIO_NO_PUPD;
 
 		/* -- Before Calling GPIO Init, Enable Peripheral Clock -- */
 		// Clock will be enabled in GPIO_init();
