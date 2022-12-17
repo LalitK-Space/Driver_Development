@@ -1476,7 +1476,7 @@ static void I2C_ClearADDRFlag(I2C_Handle_t *pI2CHandle)
 	}
 	else
 	{
-		/* -Fasle: Device is in Slave Mode- */
+		/* -False: Device is in Slave Mode- */
 
 		// Simply clear by reading SR1 and then SR2
 		dummyRead = pI2CHandle->pI2Cx->SR1;
